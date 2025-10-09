@@ -4,7 +4,7 @@ Girish Krishnan, Philip Pincencia, and Yusuf Morsi
 
 ## Public Code
 
-The following directoriex contain public code that we will use in this project:
+The following directories contain public code that we will use in this project:
 
 * `fast-alpr/`: This contains the code for the overall system that integrates license plate detection (via YOLO bounding boxes) and license plate recognition (via OCR).
 * `open-image-models/`: This contains the code for the model we will use to detect license plates in images. The output is a bounding box around the license plate.
