@@ -46,3 +46,7 @@ python gui_frame_scrubber.py --video path/to/video.mov --outdir ./images
 * **Rotate 90°:** Rotate the video view and saved images clockwise by 90 degrees.
 * **Left / Right Arrow Keys:** Step through frames.
 * **Spacebar:** Save the current frame.
+
+## LaTeX Code (for project proposal and report)
+
+See the directory `project-proposal/` for the LaTeX code used to generate the project proposal.
