@@ -1,0 +1,152 @@
+[project]
+name = "open-image-models"
+version = "0.5.1"
+description = "Pre-trained image models using ONNX for fast, out-of-the-box inference."
+authors = [{ name = "ankandrew", email = "61120139+ankandrew@users.noreply.github.com" }]
+requires-python = ">=3.10"
+readme = "README.md"
+license = "MIT"
+keywords = [
+    "image-processing",
+    "computer-vision",
+    "deep-learning",
+    "image-classification",
+    "object-detection",
+    "open-source-models",
+    "onnx",
+]
+classifiers = [
+    "Typing :: Typed",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
+]
+dependencies = [
+    "numpy",
+    "opencv-python-headless",
+    "tqdm",
+    "rich",
+]
+
+[project.optional-dependencies]
+onnx = ["onnxruntime>=1.19.2"]
+onnx-gpu = ["onnxruntime-gpu>=1.19.2"]
+onnx-openvino = ["onnxruntime-openvino>=1.19.2"]
+onnx-directml = ["onnxruntime-directml>=1.19.2"]
+onnx-qnn = ["onnxruntime-qnn>=1.19.2"]
+
+[project.urls]
+Repository = "https://github.com/ankandrew/open-image-models"
+
+[dependency-groups]
+test = [
+    "pytest",
+    "requests",
+]
+dev = [
+    "mypy",
+    "ruff",
+    "pylint",
+    "yamllint",
+]
+docs = [
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mike",
+]
+
+[tool.uv]
+default-groups = [
+    "test",
+    "dev",
+    "docs",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # pep8-naming
+    "N",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # flake8-unused-arguments
+    "ARG",
+    # Pylint
+    "PL",
+    # Perflint
+    "PERF",
+    # Ruff-specific rules
+    "RUF",
+    # pandas-vet
+    "PD",
+]
+ignore = ["N812", "PLR2004", "PD011", "RUF046"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.pylint]
+max-args = 8
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.mypy]
+disable_error_code = "import-untyped"
+
+[tool.pylint.typecheck]
+generated-members = ["cv2.*"]
+signature-mutators = [
+    "click.decorators.option",
+    "click.decorators.argument",
+    "click.decorators.version_option",
+    "click.decorators.help_option",
+    "click.decorators.pass_context",
+    "click.decorators.confirmation_option"
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint."messages control"]
+disable = ["missing-class-docstring", "missing-function-docstring", "wrong-import-order", "missing-module-docstring"]
+
+[tool.pylint.design]
+max-args = 8
+min-public-methods = 1
+max-attributes = 8
+max-positional-arguments = 6
+
+[tool.pylint.miscellaneous]
+notes = ["FIXME", "XXX"]
+
+[tool.pylint.basic]
+no-docstring-rgx = "^__|^test_"
