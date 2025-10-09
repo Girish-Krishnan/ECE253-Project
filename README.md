@@ -27,14 +27,14 @@ source .venv/bin/activate
 
 ## Utility Scripts
 
-### `frame_scrubber.py`
+### `scripts/frame_scrubber.py`
 
 This tool lets you step through video frames, view them interactively, and save specific frames as images.
-
+    
 #### Basic Usage
 
 ```bash
-python gui_frame_scrubber.py --video path/to/video.mov --outdir ./images
+python scripts/frame_scrubber.py -v path/to/video.mov -o ./images
 ```
 
 #### Controls
