@@ -1,0 +1,13 @@
+input_dir: "data/raw"
+output_dir: "data/blurred"
+
+blur:
+  min_degree: 50
+  max_degree: 180
+  min_angle: 50
+  max_angle: 180
+  intensity_factor: 8      # multiplies blur kernel length
+  color_shift: true           # chromatic aberration effect
+  blend_original: 0.2       # 0=fully blurred, 1=fully original
+  curved_motion: true         # simulate camera shake path
+  noise_stddev: 10.0
