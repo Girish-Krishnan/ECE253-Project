@@ -4,6 +4,13 @@
 % --------------------------------------------------------------------------
 \documentclass{article}
 \usepackage{spconf,amsmath,graphicx}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 % Example definitions.
 % --------------------
@@ -12,7 +19,7 @@
 
 % Title.
 % ------
-\title{Defogging and Undarkening Algorithms to Improve Performance of SegFormer Model for Semantic Segmentation in In-The-Wild Settings}
+\title{Image Restoration under Fog, Darkness, and Motion Blur for License Plate Recognition}
 %
 % Single address.
 % ---------------
@@ -44,223 +51,376 @@
 \maketitle
 %
 \begin{abstract}
-The abstract should appear at the top of the left-hand column of text, about
-0.5 inch (12 mm) below the title area and no more than 3.125 inches (80 mm) in
-length.  Leave a 0.5 inch (12 mm) space between the end of the abstract and the
-beginning of the main text.  The abstract should contain about 100 to 150
-words, and should be identical to the abstract text submitted electronically
-along with the paper cover sheet.  All manuscripts must be in English, printed
-in black ink.
+Suboptimal visual conditions such as fog, low light, and motion blur are not only quite common in the world, but significantly decrease the quality of captured images, hindering their usability for real-world applications such as automatic license-plate recognition systems. Previous research in digital image restoration has equipped the restorer with dark-channel dehazing, gamma correction, and Wiener filtering, but most studies are reliant on synthetic/benchmark datasets, and are lacking in natural dataset evaluation. With the goal of addressing this gap, we have collected a real-world dataset of scenes under foggy, night, motion-blur, and clear conditions in order to analyze how various image-processing algorithms improve visual quality and feature clarity to aid in license-plate detection and text readability. We apply and tune defogging, undarkening, and deblurring algorithms for each category, and compare their effectiveness using metrics such as PSNR, SSIM, NIQE, and BRISQUE. We hope to show the strengths and weaknesses of classical enhancement methods under varying conditions, and quantify their impact on the accuracy of license-plate localization and optical character recognition (OCR).
 \end{abstract}
 %
 \begin{keywords}
-One, two, three, four, five
+Image enhancement, defogging, deblurring, low-light correction, license plate recognition
 \end{keywords}
 %
 \section{Introduction}
 \label{sec:intro}
 
-These guidelines include complete descriptions of the fonts, spacing, and
-related information for producing your proceedings manuscripts. Please follow
-them and if you have any questions, direct them to Conference Management
-Services, Inc.: Phone +1-979-846-6800 or email
-to \\\texttt{papers@2024.ieeeicassp.org}.
+Common real-world conditions such as fog, low light, and motion blur are common in everyday photography, making it difficult to capture clear images. Cameras/CCTVs in uncontrolled environments; such as traffic intersections, parking lots, or highways; record images and videos with low contrast, faded edges, and rough lighting. These distortions restrict how well basic vision systems read and analyze what is in front of them, especially when it comes to cases as practical as license-plate detection or traffic monitoring.
 
-\section{Formatting your paper}
-\label{sec:format}
+For fog, scattered light and washed out colors make it difficult to see scene night or low-light. In the case of night/low-light conditions, sensor noise and poor exposure make smaller details difficult to see. In the event the camera/photographer moves quickly (especially common if in a moving vehicle), motion blur stretches objects and removes sharp texture, making any text present in them impossible to read. These effects work in their own way to hinder the visibility of the scene, and makes images and their text harder to detect.
 
-All printed material, including text, illustrations, and charts, must be kept
-within a print area of 7 inches (178 mm) wide by 9 inches (229 mm) high. Do
-not write or print anything outside the print area. The top margin must be 1
-inch (25 mm), except for the title page, and the left margin must be 0.75 inch
-(19 mm).  All {\it text} must be in a two-column format. Columns are to be 3.39
-inches (86 mm) wide, with a 0.24 inch (6 mm) space between them. Text must be
-fully justified.
+In this time of AI hype, our project's main focus is to return to the basics and investigate how classical digital image processing methods can mitigate these issues and improve the clarity and readability of real images. We are collecting a small custom dataset of visible license plates, that includes foggy, low-light, motion-blur, and clear-day photos collected around different parts of the United States, including San Diego, San Francisco, Phoenix, San Jose, Los Angeles, Chicago, and Pittsburgh with phones and dashcams. After testing various classical DIP algorithms; such as defogging, undarkening, and deblurring; we will compare how much each method improves overall image quality and the readability of license-plate text in normal outdoor conditions.
 
-\section{PAGE TITLE SECTION}
-\label{sec:pagestyle}
-
-The paper title (on the first page) should begin 1.38 inches (35 mm) from the
-top edge of the page, centered, completely capitalized, and in Times 14-point,
-boldface type.  The authors' name(s) and affiliation(s) appear below the title
-in capital and lower case letters.  Papers with multiple authors and
-affiliations may require two or more lines for this information. Please note
-that papers should not be submitted blind; include the authors' names on the
-PDF.
-
-\section{TYPE-STYLE AND FONTS}
-\label{sec:typestyle}
-
-To achieve the best rendering both in printed proceedings and electronic proceedings, we
-strongly encourage you to use Times-Roman font.  In addition, this will give
-the proceedings a more uniform look.  Use a font that is no smaller than nine
-point type throughout the paper, including figure captions.
-
-In nine point type font, capital letters are 2 mm high.  {\bf If you use the
-smallest point size, there should be no more than 3.2 lines/cm (8 lines/inch)
-vertically.}  This is a minimum spacing; 2.75 lines/cm (7 lines/inch) will make
-the paper much more readable.  Larger type sizes require correspondingly larger
-vertical spacing.  Please do not double-space your paper.  TrueType or
-Postscript Type 1 fonts are preferred.
-
-The first paragraph in each section should not be indented, but all the
-following paragraphs within the section should be indented as these paragraphs
-demonstrate.
-
-\section{MAJOR HEADINGS}
-\label{sec:majhead}
-
-Major headings, for example, "1. Introduction", should appear in all capital
-letters, bold face if possible, centered in the column, with one blank line
-before, and one blank line after. Use a period (".") after the heading number,
-not a colon.
-
-\subsection{Subheadings}
-\label{ssec:subhead}
-
-Subheadings should appear in lower case (initial word capitalized) in
-boldface.  They should start at the left margin on a separate line.
- 
-\subsubsection{Sub-subheadings}
-\label{sssec:subsubhead}
-
-Sub-subheadings, as in this paragraph, are discouraged. However, if you
-must use them, they should appear in lower case (initial word
-capitalized) and start at the left margin on a separate line, with paragraph
-text beginning on the following line.  They should be in italics.
-
-\section{PRINTING YOUR PAPER}
-\label{sec:print}
-
-Print your properly formatted text on high-quality, 8.5 x 11-inch white printer
-paper. A4 paper is also acceptable, but please leave the extra 0.5 inch (12 mm)
-empty at the BOTTOM of the page and follow the top and left margins as
-specified.  If the last page of your paper is only partially filled, arrange
-the columns so that they are evenly balanced if possible, rather than having
-one long column.
-
-In LaTeX, to start a new column (but not a new page) and help balance the
-last-page column lengths, you can use the command ``$\backslash$pagebreak'' as
-demonstrated on this page (see the LaTeX source below).
-
-\section{PAGE NUMBERING}
-\label{sec:page}
-
-Please do {\bf not} paginate your paper.  Page numbers, session numbers, and
-conference identification will be inserted when the paper is included in the
-proceedings.
-
-\section{ILLUSTRATIONS, GRAPHS, AND PHOTOGRAPHS}
-\label{sec:illust}
-
-Illustrations must appear within the designated margins.  They may span the two
-columns.  If possible, position illustrations at the top of columns, rather
-than in the middle or at the bottom.  Caption and number every illustration.
-All halftone illustrations must be clear black and white prints.  Colors may be
-used, but they should be selected so as to be readable when printed on a
-black-only printer.
-
-Since there are many ways, often incompatible, of including images (e.g., with
-experimental results) in a LaTeX document, below is an example of how to do
-this \cite{Lamp86}.
-
-\section{FOOTNOTES}
-\label{sec:foot}
-
-Use footnotes sparingly (or not at all!) and place them at the bottom of the
-column on the page on which they are referenced. Use Times 9-point type,
-single-spaced. To help your readers, avoid using footnotes altogether and
-include necessary peripheral observations in the text (within parentheses, if
-you prefer, as in this sentence).
-
-% Below is an example of how to insert images. Delete the ``\vspace'' line,
-% uncomment the preceding line ``\centerline...'' and replace ``imageX.ps''
-% with a suitable PostScript file name.
-% -------------------------------------------------------------------------
-\begin{figure}[htb]
-
-\begin{minipage}[b]{1.0\linewidth}
+\begin{figure}[htbp]
   \centering
-  \centerline{\includegraphics[width=8.5cm]{figures/image1}}
-%  \vspace{2.0cm}
-  \centerline{(a) Result 1}\medskip
-\end{minipage}
-%
-\begin{minipage}[b]{.48\linewidth}
-  \centering
-  \centerline{\includegraphics[width=4.0cm]{figures/image3}}
-%  \vspace{1.5cm}
-  \centerline{(b) Results 3}\medskip
-\end{minipage}
-\hfill
-\begin{minipage}[b]{0.48\linewidth}
-  \centering
-  \centerline{\includegraphics[width=4.0cm]{figures/image4}}
-%  \vspace{1.5cm}
-  \centerline{(c) Result 4}\medskip
-\end{minipage}
-%
-\caption{Example of placing a figure with experimental results.}
-\label{fig:res}
-%
+  \includegraphics[width=0.95\linewidth]{figures/intro.png}
+  \caption{Overall project workflow showing main steps: image collection, digital image processing (defogging, undarkening, deblurring), and evaluation using Fast-ALPR.}
+  \label{fig:intro_flow}
 \end{figure}
 
 
-% To start a new column (but not a new page) and help balance the last-page
-% column length use \vfill\pagebreak.
-% -------------------------------------------------------------------------
-%\vfill
-%\pagebreak
+\section{Related Works}
+\label{sec:related-works}
 
-\section{COPYRIGHT FORMS}
-\label{sec:copyright}
+Prior works can be broadly classified into learning-based restoration models for specific degradations such as low light, haze, or motion blur, and classical image processing methods designed to address these distortions through physically inspired priors and signal models. In this section, we review both categories and highlight their strengths, limitations, and relevance to our project.
 
-You must submit your fully completed, signed IEEE electronic copyright release
-form when you submit your paper. We {\bf must} have this form before your paper
-can be published in the proceedings.
+\subsection{Low-Light Enhancement and Nighttime Recognition}
 
-\section{RELATION TO PRIOR WORK}
-\label{sec:prior}
+Low-light imaging severely affects license plate readability by reducing contrast, amplifying sensor noise, and suppressing fine details. Saputra \textit{et al.}~\cite{SAPUTRA2024404} addressed this problem through the URetinex-Net model, which unfolds a Retinex-based optimization into a trainable network that separates illumination and reflectance layers. Their pipeline combined URetinex-Net with a TRBA (Transformer–Bidirectional LSTM–Attention) OCR recognizer, achieving an 80.11\% recognition rate in night scenes, corresponding to a 5.11\% improvement over baseline methods without enhancement. The network excels at decomposing illumination and preserving text texture; however, it remains limited by synthetic training data and may generalize poorly to unseen lighting distributions. Moreover, its reliance on global illumination priors makes it computationally demanding for real-time use in embedded systems.
 
-The text of the paper should contain discussions on how the paper's
-contributions are related to prior work in the field. It is important
-to put new work in  context, to give credit to foundational work, and
-to provide details associated with the previous work that have appeared
-in the literature. This discussion may be a separate, numbered section
-or it may appear elsewhere in the body of the manuscript, but it must
-be present.
+Complementing this, the classical Improved Adaptive Gamma Correction with Weighted Distribution (IAGCWD) algorithm~\cite{DBLP:journals/corr/abs-1709-04427} provides a non-learning alternative that adaptively brightens underexposed regions while maintaining local contrast. It modifies the histogram-based gamma mapping using weighted probability distributions and CDF truncation, preventing over-amplification in already bright regions. While it cannot learn semantic priors like deep networks, its interpretability, parameter efficiency, and robustness make it highly suitable for low-power applications or datasets lacking paired supervision. The key limitation here is its dependence on global statistics, which may inadequately handle spatially varying illumination.
 
-You should differentiate what is new and how your work expands on
-or takes a different path from the prior studies. An example might
-read something to the effect: "The work presented here has focused
-on the formulation of the ABC algorithm, which takes advantage of
-non-uniform time-frequency domain analysis of data. The work by
-Smith and Cohen \cite{Lamp86} considers only fixed time-domain analysis and
-the work by Jones et al \cite{C2} takes a different approach based on
-fixed frequency partitioning. While the present study is related
-to recent approaches in time-frequency analysis [3-5], it capitalizes
-on a new feature space, which was not considered in these earlier
-studies."
+\subsection{Haze and Fog Removal}
+
+He \textit{et al.}~\cite{5206515} proposed the seminal Dark Channel Prior (DCP) method, which estimates transmission maps from the minimum intensity of local patches under the assumption that most outdoor scenes contain at least one dark pixel in each color channel. The dehazing process reconstructs the latent scene radiance by inverting the Koschmieder model. DCP remains one of the most widely adopted priors due to its mathematical simplicity and ability to restore global contrast; however, its pixelwise assumptions can over-saturate bright areas and amplify noise in sky-dominated regions. Subsequent deep-learning approaches often embed DCP as a regularization term but still inherit this limitation under heavy haze or non-uniform illumination. 
+
+Even though the method is simple, DCP continues to outperform many black-box deep models in visibility restoration for small datasets. For license plate recognition, the method effectively enhances edge contrast and color balance, though it lacks adaptive noise suppression and may introduce halo artifacts at sharp boundaries.
+
+\subsection{Motion Deblurring and Dynamic Scene Restoration}
+
+Gong \textit{et al.}~\cite{gong2024datasetmodelrealisticlicense} introduced the LP-Blur dataset (which is the first large-scale, real-captured dataset of paired blurred and sharp license plate images) along with LPDGAN, a generative adversarial deblurring network designed for text preservation. The model integrates multi-scale latent fusion, text reconstruction through OCR feature consistency, and a partition discriminator that enforces local sharpness at the character level. LPDGAN achieved a PSNR of 29.95~dB under normal light and 30.96~dB in low light, outperforming previous methods by over 1~dB and improving OCR accuracy by 21.24\%. Its primary strength is its character-aware adversarial training, which restores semantic legibility rather than mere pixel sharpness. Nevertheless, the architecture’s multi-scale Transformer components result in heavy computational cost and it may not be necessarily effective on other alphabets or plate styles.
+
+Another similar line of work by Na \textit{et al.}~\cite{Na_2025} proposed MF-LPR$^2$, which uses multi-frame information through optical flow alignment. Using FlowFormer++ for inter-frame motion estimation, the method aggregates frames using temporal filtering and spatial refinement modules to suppress inconsistent motion vectors. On their RLPR dataset, MF-LPR$^2$ achieved an OCR accuracy of 86.44\%, outperforming eleven state-of-the-art baselines, and significantly improving both PSNR (16.35~dB) and SSIM (0.35). The method’s interpretability makes it good for forensic applications. However, it requires dense optical flow computation, making it unsuitable for real-time traffic systems. Its performance also deteriorates when optical flow estimation fails due to occlusion or severe blur.
+
+Classical deblurring methods such as Richardson–Lucy (RL) deconvolution~\cite{richardson1972bayesian,lucy1974iterative} remain relevant due to their strong physical grounding. The RL algorithm iteratively maximizes the Poisson likelihood of the observed image, assuming a known blur kernel. When combined with Gaussian smoothing and appropriate boundary handling~\cite{chan1998total,yuan2007image}, RL can recover sharp details without hallucinating textures. Modern blind deblurring variants~\cite{levin2009understanding,perrone2014total,fergus2006removing,whyte2010non} have introduced kernel estimation schemes based on total variation regularization or motion trajectory priors. Although deep models outperform RL in visual fidelity, the latter remains advantageous for controlled datasets where physical blur models can be reasonably approximated. Its main weaknesses, however, are noise amplification and computational instability when the blur kernel is misestimated.
+
+\subsection{Super-Resolution and Benchmark Datasets for License Plate Restoration}
+
+Recent efforts have also focused on super-resolution (SR) and dataset curation for degraded license plate images. Nascimento \textit{et al.}~\cite{Nascimento_2025} proposed the UFPR-SR-Plates dataset, which provides 100{,}000 paired low- and high-resolution LP images captured under diverse environmental conditions. They benchmarked several SR models including Real-ESRGAN, SR3, LPSRGAN, PLNET, and LCDNet using a GP-LPR OCR backend. The study demonstrated that fusing multiple restored frames via a majority-vote-by-character scheme increased full-plate recognition accuracy from 2.2\% for raw low-resolution inputs to 42.3\%, while the best individual model (LCDNet) achieved 61.4\% accuracy at high resolution. The dataset’s strength is its scale and real-world diversity. However, it currently lacks nighttime and cross-country data. Diffusion-based SR models such as SR3 provide great perceptual quality but remain computationally expensive for real-time ALPR deployment.
+
+\subsection{Current Research Trends and Gaps}
+
+Overall, there is a trend toward integrating physically interpretable priors with data-driven learning to achieve reliable restoration under diverse degradations. Diffusion and Transformer-based architectures such as LP-Diff~\cite{11093681} fuse diffusion denoising with fine-grained plate structure constraints, but such models demand extensive training data and are less suited to low-data, real-time contexts. Classical methods like Richardson–Lucy deconvolution, the dark channel prior, and adaptive gamma correction remain competitive due to their interpretability, tunable behavior, and independence from learned priors. Their low computational cost makes them ideal for systematic evaluation on real-world data. Our work will focus on the use of classical image processing algorithms as pre-processing methods before feeding the image into deep learning models for license plate detection and recognition.
+
+\section{Proposed Work}
+\label{sec:proposed-work}
+
+\subsection{Models for License Plate Detection and Recognition}
+
+The Fast-ALPR pipeline~\cite{fastalpr} integrates two deep-learning components trained independently: a YOLOv9-based license plate detector and a Compact Convolutional Transformer (CCT) based OCR recognizer. These models are available as pre-trained checkpoints on Hugging Face under the names "yolo-v9-t-384-license-plate-end2end" and "cct-xs-v1-global-model", respectively. Figure~\ref{fig:pipeline} illustrates the overall flow starting with image enhancement stage followed by license plate localization and text decoding.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/proposed_work/fast-alpr-pipeline.png}
+    \caption{Architecture of the Fast-ALPR pipeline. The input image is optionally enhanced (defogging, undarkening, deblurring) before detection using a YOLOv9-based license plate detector. Detected regions of interest (ROIs) are processed by a CNN–BiLSTM–CTC OCR network for character recognition, and final text results are post-processed with bounding box metadata.}
+    \label{fig:pipeline}
+\end{figure}
+
+\subsubsection{YOLOv9 for License Plate Detection}
+
+The YOLOv9 detector~\cite{wang2024yolov9} extends the one-stage object detection family with an improved backbone–neck–head design featuring the \emph{Programmable Gradient Information Bottleneck (C2f-PGB)} and a \emph{Generalized Efficient Layer Aggregation Network (GELAN)} backbone. Given an input image $I\in\mathbb{R}^{H\times W\times 3}$, the detector predicts $K$ bounding boxes $\{b_k\}_{k=1}^K$ and class confidence scores $\{s_k\}_{k=1}^K$ such that
+\begin{equation}
+b_k = (x_k, y_k, w_k, h_k), \quad 
+s_k = \sigma(\mathbf{W}_h^\top f(I)),
+\end{equation}
+where $f(\cdot)$ denotes the shared convolutional backbone, and $\sigma$ is the logistic activation. During training, YOLOv9 minimizes a compound loss
+\begin{equation}
+\mathcal{L}_{\text{det}} =
+\lambda_{\text{box}}\,\mathcal{L}_{\text{CIoU}} +
+\lambda_{\text{cls}}\,\mathcal{L}_{\text{BCE}} +
+\lambda_{\text{obj}}\,\mathcal{L}_{\text{conf}},
+\end{equation}
+where $\mathcal{L}_{\text{CIoU}}$ is the Complete IoU loss for bounding-box regression, $\mathcal{L}_{\text{BCE}}$ represents binary cross-entropy terms for class prediction, and $\mathcal{L}_{\text{conf}}$ denotes the confidence loss, a binary cross-entropy term that penalizes incorrect predictions of whether a bounding box truly contains an object (license plate) or background.
+
+\subsubsection{CCT-XS OCR for Character Recognition}
+
+For character-level optical recognition, the CCT model combines convolutional token embedding with lightweight Transformer encoders and a Bidirectional Long Short-Term Memory (BiLSTM) sequence head trained with Connectionist Temporal Classification (CTC) loss. Given a cropped license plate image $P$, the OCR model first extracts visual features using convolutional layers and then processes them as a sequence through Transformer and BiLSTM modules to capture both spatial and contextual information. The output sequence is decoded by a CTC layer to produce the final text prediction $\hat{T}$, representing the recognized license plate number.
+
+
+\subsection{Blind Motion Deblurring}
+\label{ssec:fast_deblur}
+
+We employ a classical Richardson--Lucy (RL) deconvolution framework~\cite{richardson1972bayesian, lucy1974iterative}, extended with a grid-based estimation of the motion blur Point-Spread Function (PSF).
+
+\subsubsection{Image model and RL deconvolution}
+The blurred image $B$ is modeled as the convolution of an unknown latent sharp image $I$ with a blur kernel $k$ and additive noise $\eta$:
+\begin{equation}
+B = I * k + \eta,
+\end{equation}
+where $*$ denotes 2D convolution. 
+Given an estimate of $k$, RL iteratively refines the estimate $\hat{I}$ by maximizing the Poisson likelihood of $B$ conditioned on $\hat{I} * k$:
+\begin{equation}
+\hat{I}^{(t+1)} = 
+\hat{I}^{(t)} 
+\cdot 
+\left[
+\frac{B}{\hat{I}^{(t)} * k + \epsilon}
+* k^{\star}
+\right],
+\end{equation}
+where $k^{\star}$ is $k$ flipped horizontally and vertically, and $\epsilon \ll 1$ prevents division by zero.
+
+However, unregularized RL tends to amplify noise and overemphasize high frequencies after multiple iterations~\cite{biggs1997acceleration}. 
+To suppress ringing and stabilize convergence, we incorporate Gaussian smoothing after each iteration:
+\begin{equation}
+\hat{I}^{(t+1)} \leftarrow G_{\sigma} * \hat{I}^{(t+1)}, \label{gauss_smoother}
+\end{equation}
+where $G_{\sigma}$ is a Gaussian filter with standard deviation $\sigma$. 
+
+\subsubsection{PSF estimation}
+The accuracy of non-blind deconvolution fundamentally depends on the estimated PSF~\cite{levin2009understanding}. 
+In the blind setting, where $k$ is unknown, jointly estimating $I$ and $k$ is severely ill-posed since both contribute multiplicatively in the Fourier domain, leading to many degenerate solutions. 
+Moreover, optimization-based blind deblurring often converges to trivial or overly smooth kernels unless carefully initialized~\cite{whyte2010non}. 
+
+To avoid such instability, we parameterize $k$ as a \emph{linear motion} PSF characterized by its length $L$ and orientation $\theta$:
+\begin{equation}
+k(L, \theta)_{i,j} = \frac{1}{Z} \cdot \delta\!\big(j - i\tan(\theta)\big),
+\quad i,j \in [-L/2, L/2],
+\end{equation}
+where $Z = \sum_{i,j}k_{i,j}$ normalizes the kernel. 
+This formulation captures the dominant form of motion blur caused by camera or object translation during exposure~\cite{perrone2014total}. 
+By constraining $k$ to a physically plausible parameter space, we avoid the over-parameterization that often destabilizes free-form kernel estimation~\cite{fergus2006removing}.
+
+Rather than solving a fragile continuous optimization over $(L,\theta)$, we discretize the parameter space into a uniform grid:
+\begin{equation}
+\mathcal{K} = 
+\big\{\, k(L, \theta) \mid 
+L \in [L_{\min}, L_{\max}], 
+\;
+\theta \in [0, 360^\circ)
+\big\}.
+\end{equation}
+Each kernel $k_i \in \mathcal{K}$ is applied to a downsampled version of $B$, followed by a few RL iterations ($T_\text{eval}$) to obtain a preliminary estimate $\hat{I}_i$.  
+This produces a set of candidate reconstructions representing distinct motion hypotheses.
+
+To quantify the plausibility of each candidate, we compute a sharpness score $S_i$ based on the mean variance of the Laplacian across color channels:
+\begin{equation}
+S_i = 
+\frac{1}{3} \sum_{c \in \{R,G,B\}} 
+\operatorname{Var}\!\big[\nabla^2 \hat{I}_{i,c}\big],
+\end{equation}
+where $\nabla^2$ denotes the Laplacian operator. 
+This metric reflects the intuitive notion that well-deblurred images exhibit sharper edges and stronger local contrast while minimizing residual blur~\cite{wang2004image}. 
+The PSF corresponding to the maximum sharpness is then selected:
+\begin{equation}
+k^* = \arg\max_{k_i \in \mathcal{K}} S_i.
+\end{equation}
+
+\subsubsection{Boundary stabilization}
+The ringing issues mentioned previously are mitigated slightly using Eq.~\eqref{gauss_smoother}, which applies Gaussian smoothing throughout the image. 
+However, a more severe form of ringing, known as Gibbs oscillation, tends to occur near image borders due to discontinuities introduced by finite-support convolution and the implicit assumption of periodic boundaries. 
+To prevent this, the blurred input is extended by $p$ pixels using border replication:
+\begin{equation}
+B_{\text{ext}} = \operatorname{Replicate}(B, p),
+\end{equation}
+which ensures continuity across the convolution boundaries~\cite{chan1998total, yuan2007image}. 
+After deconvolution, the padding region is removed to obtain the final deblurred image:
+\[
+\hat{I} = \operatorname{Crop}(\hat{I}_{\text{ext}}, p).
+\]
+
+The full deblurring pipeline is summarized in Algorithm~\ref{alg:grid_deblur}. 
+In short, the method evaluates a discrete set of motion kernels, reconstructs provisional images via RL updates, and selects the kernel that produces the sharpest and most stable restoration.
+
+\begin{algorithm}[H]
+\caption{Grid-Based Blind Motion Deblurring}
+\label{alg:grid_deblur}
+\begin{algorithmic}[1]
+\Require Blurred image $B$, PSF grid $\mathcal{K}$, evaluation iterations $T_{\text{eval}}$, final iterations $T_{\text{final}}$, border extension $p$
+\Ensure Restored image $\hat{I}$
+\State $B_{\text{ext}} \gets \operatorname{Replicate}(B, p)$
+\State $\mathcal{S} \gets \emptyset$
+\ForAll{$k_i \in \mathcal{K}$}
+    \State Initialize $\hat{I}_i^{(0)} \gets B_{\text{ext}}$
+    \For{$t = 1 \dots T_{\text{eval}}$}
+        \State $r \gets \operatorname{clip}\!\left(\frac{B_{\text{ext}}}{\hat{I}_i^{(t-1)} * k_i + \epsilon}, r_{\min}, r_{\max}\right)$
+        \State $\hat{I}_i^{(t)} \gets \hat{I}_i^{(t-1)} \cdot (r * k_i^{\star})$
+        \State $\hat{I}_i^{(t)} \gets G_{\sigma} * \hat{I}_i^{(t)}$
+    \EndFor
+    \State $S_i \gets \operatorname{Var}\!\big[\nabla^2 \hat{I}_i^{(T_{\text{eval}})}\big]$
+    \State $\mathcal{S} \gets \mathcal{S} \cup \{(k_i, S_i)\}$
+\EndFor
+\State $k^* \gets \arg\max_{(k_i, S_i) \in \mathcal{S}} S_i$
+\State Run RL deconvolution on $B_{\text{ext}}$ using $k^*$ for $T_{\text{final}}$ iterations
+\State $\hat{I} \gets \operatorname{Crop}(\hat{I}_{\text{final}}, p)$
+\State \Return $\hat{I}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Adaptive Gamma Correction for Low-Light Enhancement}
+\label{ssec:undarkening}
+
+For underexposed or low-light images in our dataset, we will use the \textit{Improved Adaptive Gamma Correction with Weighted Distribution (IAGCWD)} algorithm created by Cao~\textit{et al.}~\cite{DBLP:journals/corr/abs-1709-04427}. This technique extends classical adaptive gamma correction by introducing two mechanisms: (1) a \emph{negative-image transform} to enhance globally bright images, and (2) a \emph{CDF truncation scheme} to prevent over-enhancement in dimmed regions. The method modulates pixel-wise gamma parameters in an adaptive manner based on the statistical structure of the input image histogram, producing consistent brightness correction.
+
+\subsubsection{Mathematical Formulation}
+
+Given a grayscale luminance channel $I(x,y) \in [0, 255]$, the pixel transformation is defined as
+\begin{equation}
+T(l) = \mathrm{round}\!\left( l_{\max} \left( \frac{l}{l_{\max}} \right)^{\gamma(l)} \right),
+\end{equation}
+where $l_{\max}=255$ and $\gamma(l)$ is the intensity-dependent gamma parameter derived from the cumulative distribution function (CDF) of the gray-level histogram $p(l)$:
+\begin{equation}
+\gamma(l) = 1 - c(l), \quad c(l) = \sum_{x=0}^{l} p(x).
+\end{equation}
+The CDF controls local tone mapping, brightening darker pixels with smaller $\gamma(l)$ while preserving structure in well-exposed regions. To improve the adaptivity of $p(l)$, a \textit{weighted distribution} $p_w(l)$ is constructed as
+\begin{equation}
+p_w(l) = \frac{p(l) - p_{\min}}{p_{\max} - p_{\min}} \, p_{\max}^{\alpha},
+\label{eq:weight}
+\end{equation}
+where $\alpha \in (0,1]$ controls the flattening strength of the histogram; smaller $\alpha$ reduces dominance of peak intensities. The normalized weighted distribution is used to recompute a smooth CDF $c_w(l)$, which stabilizes the mapping under nonuniform illumination.
+
+For bright images, IAGCWD applies the same transformation to the \emph{negative image} $I'(x,y) = 255 - I(x,y)$, which gives $T'(I')$, and then inverts it:
+\begin{equation}
+I_e(x,y) = 255 - T'(I'(x,y)).
+\end{equation}
+This ensures that large high-intensity regions (saturated whites) are effectively treated as low-intensity regions during correction.
+
+To avoid over-enhancement and loss of detail in bright regions of dimmed images, Cao~\textit{et al.} introduce a \textit{CDF truncation} scheme:
+\begin{equation}
+\gamma'(l) = \max\big(\tau, 1 - c_w(l)\big),
+\label{eq:trunc}
+\end{equation}
+where $\tau \in [0,1]$ is a lower bound on the gamma value. This prevents $\gamma(l)$ from approaching zero, thus constraining the brightness expansion of high-intensity pixels.
+
+\subsubsection{Parameter Tuning}
+
+The algorithm involves four tunable parameters:
+\begin{itemize}
+    \item $\alpha$: histogram weighting coefficient controlling contrast flattening.
+    \item $\tau$: truncation parameter controlling enhancement strength.
+    \item $T_t$: expected global average intensity (typically $T_t = 112$ for 8-bit images).
+    \item $\tau_t$: threshold for classifying bright vs. dimmed images (empirically $\tau_t = 0.3$).
+\end{itemize}
+According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement for bright scenes, while $\alpha=0.75$ and $\tau=0.5$ work well for dimmed ones. Figure \ref{fig:gamma-correction-result} shows an example dark image alongside its processed image using these parameters. However, we plan to conduct an ablation study where these parameters are tuned further to explore the resulting performance on the license plate detection and OCR task.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/algorithms/dark_original.png}
+    \includegraphics[width=\linewidth]{figures/algorithms/dark_processed.jpg}
+    \caption{An original dark image (top) and the result (bottom) after applying the IAGCWD algorithm using the default parameters. The license plate is much easier to read in the processed image.}
+    \label{fig:gamma-correction-result}
+\end{figure}
+
+\begin{algorithm}[H]
+\caption{Improved Adaptive Gamma Correction with Weighted Distribution (IAGCWD)}
+\label{alg:iagcwd}
+\begin{algorithmic}[1]
+\Require Input luminance image $I$, parameters $\alpha, \tau, T_t, \tau_t$
+\Ensure Enhanced image $I_e$
+\State Compute global mean brightness $m = \frac{1}{MN}\sum_{x,y} I(x,y)$
+\State Determine image type: $t = (m - T_t)/T_t$
+\If{$t > \tau_t$} \Comment{Bright image}
+    \State Compute negative image $I' = 255 - I$
+    \State Enhance $I'$ via weighted CDF and Eq.~\eqref{eq:weight}--\eqref{eq:trunc} to obtain $I'_e$
+    \State $I_e = 255 - I'_e$
+\ElsIf{$t < -\tau_t$} \Comment{Dimmed image}
+    \State Compute weighted histogram $p_w(l)$ using Eq.~\eqref{eq:weight}
+    \State Compute truncated gamma $\gamma'(l)$ using Eq.~\eqref{eq:trunc}
+    \State Apply pixel-wise mapping $T(l)$ to obtain $I_e$
+\Else
+    \State $I_e = I$ \Comment{No enhancement for normal images}
+\EndIf
+\State \Return $I_e$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Defogging with Dark Channel Prior Method}
+
+% Yusuf to add here
+\subsection{Evaluation Metrics and Expected Outcome}
+
+\label{ssec:metrics}
+
+The effectiveness of each restoration algorithm is evaluated using both image quality metrics and downstream recognition performance. 
+Let $I_{\text{in}}$ denote the degraded input image, $I_{\text{rest}}$ the restored image, and $I_{\text{ref}}$ a pseudo-reference image representing the best visually exposed frame of the same scene when available. 
+
+Peak Signal-to-Noise Ratio (PSNR) is used to quantify the mean-square deviation between the restored and reference images,
+\begin{equation}
+\mathrm{PSNR} = 10 \log_{10}\!\left(\frac{L^2}{\mathrm{MSE}}\right), 
+\end{equation}
+\begin{equation}
+\mathrm{MSE} = \frac{1}{MN}\!\sum_{x,y}\!\big(I_{\text{rest}}(x,y)-I_{\text{ref}}(x,y)\big)^2.
+\end{equation}
+
+where $L = 255$ for 8-bit images. Higher PSNR values correspond to smaller reconstruction error and improved luminance fidelity. To assess local geometric and contrast preservation, the Structural Similarity Index (SSIM) is computed over small spatial windows:
+\begin{equation}
+\mathrm{SSIM}(I_{\text{rest}}, I_{\text{ref}}) = 
+\frac{(2\mu_r\mu_t + C_1)(2\sigma_{r t} + C_2)}
+{(\mu_r^2 + \mu_t^2 + C_1)(\sigma_r^2 + \sigma_t^2 + C_2)},
+\end{equation}
+where $\mu_r$, $\mu_t$ denote the mean luminances, $\sigma_r^2$, $\sigma_t^2$ their variances, and $\sigma_{rt}$ their covariance within the window. 
+Constants $C_1, C_2$ stabilize the division for small denominators. Because reference images are not always available for real scenes, we additionally employ the Natural Image Quality Evaluator (NIQE) and the Blind/Referenceless Image Spatial Quality Evaluator (BRISQUE), both based on natural scene statistics (NSS). 
+Given an image $I_{\text{rest}}$, NIQE computes a multivariate Gaussian model of normalized luminance coefficients $\mathbf{f}(x,y)$ extracted over patches, and evaluates the Mahalanobis distance between its distribution parameters $\boldsymbol{\mu}_r, \Sigma_r$ (from pristine natural images) and those of the test image $\boldsymbol{\mu}_t, \Sigma_t$:
+\begin{equation}
+\mathrm{NIQE}(I_{\text{rest}}) = 
+\sqrt{(\boldsymbol{\mu}_r - \boldsymbol{\mu}_t)^\top
+\left( \frac{\Sigma_r + \Sigma_t}{2} \right)^{-1}
+(\boldsymbol{\mu}_r - \boldsymbol{\mu}_t)}.
+\end{equation}
+Lower NIQE values imply better perceived naturalness. BRISQUE operates similarly but uses a support vector regression model to predict perceptual distortion levels from NSS features; smaller values indicate more natural visual quality.
+
+Finally, the restored images are passed through the Fast-ALPR pipeline, and we measure the downstream recognition accuracy. 
+Let $\hat{T}(I_{\text{rest}})$ denote the OCR output string and $T_{\text{gt}}$ the ground-truth plate text. 
+We compute the normalized Levenshtein similarity:
+\begin{equation}
+A_{\text{OCR}} = 
+1 - \frac{d_{\text{lev}}\big(\hat{T}(I_{\text{rest}}), T_{\text{gt}}\big)}{\max(|\hat{T}|, |T_{\text{gt}}|)},
+\end{equation}
+where $d_{\text{lev}}$ is the edit distance. For a given OCR detection, $A_{\text{OCR}} = 0$ if the detection perfectly matches the ground truth.
+
+As our expected outcome, we hypothesize that the deblurring and undarkening algorithms will give the largest increase in both $\mathrm{PSNR}$ and $A_{\text{OCR}}$, since motion blur and low illumination directly degrade character readability. 
+Defogging is expected to produce modest but consistent improvement in $\mathrm{SSIM}$ and BRISQUE by restoring edge contrast and color saturation. Across all degradation conditions, we can expect a correlation between perceptual improvement (low NIQE, high SSIM) and ALPR recognition accuracy.
+
+\section{Dataset}
+\label{sec:dataset}
+
+\subsection{Original Public Dataset}
+
+The \texttt{fast-alpr} GitHub repository~\cite{fastalpr} relies on the multi-source dataset collection from \texttt{LocalizadorPatentes}~\cite{localizadorpatentes}, which has multiple public license plate datasets. The combined training data comes from the following sources:
+
+\begin{itemize}
+    \item \textit{OpenImages}~\cite{openimages}: A large-scale dataset released by Google, containing over 9 million annotated images with 600 object categories. The subset used for ALPR training includes scenes containing vehicles and visible license plates, contributing diverse background and illumination conditions.
+    \item \textit{Romanian License Plate Dataset}: A small, high-quality public dataset with approximately 534 images of European-style Romanian plates annotated in Pascal VOC format.
+    \item \textit{OpenALPR Benchmark Dataset}: The benchmark dataset released by the OpenALPR project, comprising labeled vehicle images with license plate bounding boxes and corresponding text strings.
+    \item \textit{CCPD (Chinese City Parking Dataset)}~\cite{ccpd}: A large-scale dataset introduced at ECCV 2018 with approximately 282,000 images, each annotated with the plate bounding box, four corner points, and text.
+\end{itemize}
+
+During the original training of the YOLO-based detection model within \texttt{fast-alpr}, all datasets were unified to the YOLO annotation format $(x, y, w, h)$ with input sizes of $448\times448$ for the full model and $608\times608$ for the lightweight variant.
+
+\subsection{Custom Dataset Collection} 
+
+As part of our project, we are creating our own dataset of real-world vehicle license plates captured using smartphone cameras and dashcams across multiple U.S. cities (San Diego, San Francisco, Los Angeles, Phoenix, San Jose, Chicago, and Pittsburgh). Each image is categorized into one of four environmental conditions: (1) Normal daylight, (2) Foggy weather, (3) Low-light or nighttime, and (4) Motion blur (vehicle or camera movement). Our goal is to have approximately 300 images per category. Figure \ref{fig:dataset_examples} shows a few example images for each type of distortion that we plan to analyze.
+
+\begin{figure*}
+  \centering
+  \includegraphics[width=\textwidth]{figures/our_dataset/all.png}
+  \caption{Example samples from our collected dataset showing four real-world imaging conditions: (a) clear daylight, (b) fog, (c) low-light/night, and (d) motion blur. Each row shows three representative examples.}
+  \label{fig:dataset_examples}
+\end{figure*}
+
+
+\subsection{Synthetic Augmentation}
+
+To further expand the dataset and enable controlled experiments, we also plan to generate degraded samples using image-processing models. Motion blur is simulated through a randomized convolutional kernel generator that produces both curved and linear trajectories, optionally introducing per-channel perturbations to mimic real sensor motion. Each kernel is applied via two-dimensional convolution, followed by Gaussian noise injection and alpha blending with the original image to preserve natural appearance. In addition, fog effects will be synthesized using a combination of classical scattering-based models and recent deep learning fog-generation tools capable of controlling density and depth-dependent light scattering. These augmentations allow us to vary the intensity of degradation in a reproducible way while maintaining visual realism, enabling systematic ablation studies on how defogging, undarkening, and deblurring algorithms affect both image quality and downstream license-plate recognition performance.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+
 
 \vfill\pagebreak
-
-\section{REFERENCES}
-\label{sec:refs}
-
-List and number all bibliographical references at the end of the
-paper. The references can be numbered in alphabetic order or in
-order of appearance in the document. When referring to them in
-the text, type the corresponding reference number in square
-brackets as shown at the end of this sentence \cite{C2}. An
-additional final page (the fifth page, in most cases) is
-allowed, but must contain only references to the prior
-literature.
 
 % References should be produced using the bibtex program from suitable
 % BiBTeX files (here: strings, refs, manuals). The IEEEbib.bst bibliography
 % style file from IEEE produces unsorted bibliography list.
 % -------------------------------------------------------------------------
 \bibliographystyle{IEEEbib}
-\bibliography{strings,refs}
-
+\bibliography{refs}
+ 
 \end{document}
