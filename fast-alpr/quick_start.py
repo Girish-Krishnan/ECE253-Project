@@ -9,7 +9,7 @@ alpr = ALPR(
 )
 
 # Load the image
-image_path = "../data/images/IMG_2383_frame_000763.jpg"
+image_path = "dark_8.jpg"
 frame = cv2.imread(image_path)
 
 # Draw predictions on the image
