@@ -67,6 +67,21 @@ For fog, scattered light and washed out colors make it difficult to see scene ni
 
 In this time of AI hype, our project's main focus is to return to the basics and investigate how classical digital image processing methods can mitigate these issues and improve the clarity and readability of real images. We are collecting a small custom dataset of visible license plates, that includes foggy, low-light, motion-blur, and clear-day photos collected around different parts of the United States, including San Diego, San Francisco, Phoenix, San Jose, Los Angeles, Chicago, and Pittsburgh with phones and dashcams. After testing various classical DIP algorithms; such as defogging, undarkening, and deblurring; we will compare how much each method improves overall image quality and the readability of license-plate text in normal outdoor conditions.
 
+\subsection{Contributions and Innovation}
+Our project goal is to evaluate how much traditional image processing can continue to help in a field that is at this time, dominated by deep learning. 
+From scratch, we collected a custom small real-world dataset of cars and license plates in fog, low-light, and motion-blur conditions across several U.S. cities, before benchmarking simple restoration pipelines against more modern ones.
+
+The key contributions are:
+\begin{itemize}
+    \item Collecting a manually captured dataset that covers four common real-life conditions (daylight, fog, darkness, and motion blur)
+    \item Developing a unified evaluation pipeline that applies enhancement to a public ALPR model (Fast-ALPR) in order to measure how much visibility restoration impacts detection and OCR accuracy.
+    \item For each type, we compare at least two algorithms, one of which being classical (e.g., Dark Channel Prior, Richardson–Lucy, Adaptive Gamma), to note trade-offs between the two.
+    \item We will implement a condition-detection pipeline that automatically routes each image to the most appropriate enhancement step, so that we can have cascading of multiple corrections when necessary.
+\end{itemize}
+
+Rather than building a new model, we will show how the tuning of existing digital processing algorithms can make off-the-shelf recognition systems noticeably more reliable in real environments.
+
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/intro.png}
@@ -137,6 +152,13 @@ where $f(\cdot)$ denotes the shared convolutional backbone, and $\sigma$ is the 
 \lambda_{\text{obj}}\,\mathcal{L}_{\text{conf}},
 \end{equation}
 where $\mathcal{L}_{\text{CIoU}}$ is the Complete IoU loss for bounding-box regression, $\mathcal{L}_{\text{BCE}}$ represents binary cross-entropy terms for class prediction, and $\mathcal{L}_{\text{conf}}$ denotes the confidence loss, a binary cross-entropy term that penalizes incorrect predictions of whether a bounding box truly contains an object (license plate) or background.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/yolo9.png}
+    \caption{YOLOv9 architecture showing the GELAN backbone, PAN-FPN neck, and three-branch detection head outputting bounding boxes, class scores, and confidence.}
+    \label{fig:yolov9_arch}
+\end{figure}
 
 \subsubsection{CCT-XS OCR for Character Recognition}
 
@@ -333,6 +355,11 @@ According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement 
 \subsection{Defogging with Dark Channel Prior Method}
 
 % Yusuf to add here
+
+
+
+
+
 \subsection{Evaluation Metrics and Expected Outcome}
 
 \label{ssec:metrics}
@@ -399,7 +426,7 @@ As part of our project, we are creating our own dataset of real-world vehicle li
 
 \begin{figure*}
   \centering
-  \includegraphics[width=\textwidth]{figures/our_dataset/all.png}
+  \includegraphics[width=\textwidth]{Project Proposal/figures/our_dataset/all.png}
   \caption{Example samples from our collected dataset showing four real-world imaging conditions: (a) clear daylight, (b) fog, (c) low-light/night, and (d) motion blur. Each row shows three representative examples.}
   \label{fig:dataset_examples}
 \end{figure*}
@@ -410,6 +437,11 @@ As part of our project, we are creating our own dataset of real-world vehicle li
 To further expand the dataset and enable controlled experiments, we also plan to generate degraded samples using image-processing models. Motion blur is simulated through a randomized convolutional kernel generator that produces both curved and linear trajectories, optionally introducing per-channel perturbations to mimic real sensor motion. Each kernel is applied via two-dimensional convolution, followed by Gaussian noise injection and alpha blending with the original image to preserve natural appearance. In addition, fog effects will be synthesized using a combination of classical scattering-based models and recent deep learning fog-generation tools capable of controlling density and depth-dependent light scattering. These augmentations allow us to vary the intensity of degradation in a reproducible way while maintaining visual realism, enabling systematic ablation studies on how defogging, undarkening, and deblurring algorithms affect both image quality and downstream license-plate recognition performance.
 
 \section{Conclusion}
+We explored how classical image processing techniques can meaningfully improve the visibility and readability of real-world images captured under difficult conditions, such as fog, low light, and motion blur. 
+
+Using our custom dataset collected across several U.S. cities, we analyzed how three restoration algorithms—dark channel prior defogging, adaptive gamma correction, and blind motion deblurring—affect both perceptual image quality and downstream license-plate recognition. Each method addresses a different type of degradation: haze reduces global contrast, low light suppresses details, and motion blur erases texture. Using these restoration algorithms, we hope to show substantial gains in clarity and OCR accuracy.
+
+Our preliminary results suggest that classical algorithms still hold strong practical value, especially when interpretability, reliability, and speed matter more than raw perceptual realism. Moving forward, we plan to extend this study by combining these approaches with lightweight neural components, aiming for a balance between physical understanding and data-driven adaptability in future restoration pipelines.
 \label{sec:conclusion}
 
 
@@ -422,5 +454,5 @@ To further expand the dataset and enable controlled experiments, we also plan to
 % -------------------------------------------------------------------------
 \bibliographystyle{IEEEbib}
 \bibliography{refs}
- 
+
 \end{document}
