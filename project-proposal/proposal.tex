@@ -65,7 +65,7 @@ Common real-world conditions such as fog, low light, and motion blur are common 
 
 For fog, scattered light and washed out colors make it difficult to see scene night or low-light. In the case of night/low-light conditions, sensor noise and poor exposure make smaller details difficult to see. In the event the camera/photographer moves quickly (especially common if in a moving vehicle), motion blur stretches objects and removes sharp texture, making any text present in them impossible to read. These effects work in their own way to hinder the visibility of the scene, and makes images and their text harder to detect.
 
-In this time of AI hype, our project's main focus is to return to the basics and investigate how classical digital image processing methods can mitigate these issues and improve the clarity and readability of real images. We are collecting a small custom dataset of visible license plates, that includes foggy, low-light, motion-blur, and clear-day photos collected around different parts of the United States, including San Diego, San Francisco, Phoenix, San Jose, Los Angeles, Chicago, and Pittsburgh with phones and dashcams. After testing various classical DIP algorithms such as defogging, undarkening, and deblurring, we will compare how much each method improves overall image quality and the readability of license-plate text in normal outdoor conditions.
+In this time of AI hype, our project's main focus is to return to the basics and investigate how classical digital image processing methods can mitigate these issues and improve the clarity and readability of real images. We are collecting a small custom dataset of visible license plates, that includes foggy, low-light, motion-blur, and clear-day photos collected around different parts of the United States, including San Diego, San Francisco, Phoenix, San Jose, Los Angeles, Chicago, and Pittsburgh with phones and dashcams. After testing various classical digital image processing algorithms such as defogging, undarkening, and deblurring, we will compare how much each method improves overall image quality and the readability of license-plate text in normal outdoor conditions.
 
 \subsection{Contributions and Innovation}
 Our project goal is to evaluate how much traditional image processing can continue to help in a field that is at this time, dominated by deep learning. 
@@ -113,7 +113,7 @@ Gong \textit{et al.}~\cite{gong2024datasetmodelrealisticlicense} introduced the 
 
 Another similar line of work by Na \textit{et al.}~\cite{Na_2025} proposed MF-LPR$^2$, which uses multi-frame information through optical flow alignment. Using FlowFormer++ for inter-frame motion estimation, the method aggregates frames using temporal filtering and spatial refinement modules to suppress inconsistent motion vectors. On their RLPR dataset, MF-LPR$^2$ achieved an OCR accuracy of 86.44\%, outperforming eleven state-of-the-art baselines, and significantly improving both PSNR (16.35~dB) and SSIM (0.35). The method’s interpretability makes it good for forensic applications. However, it requires dense optical flow computation, making it unsuitable for real-time traffic systems. Its performance also deteriorates when optical flow estimation fails due to occlusion or severe blur.
 
-Classical deblurring methods such as Richardson–Lucy (RL) deconvolution~\cite{richardson1972bayesian,lucy1974iterative} remain relevant due to their strong physical grounding. The RL algorithm iteratively maximizes the Poisson likelihood of the observed image, assuming a known blur kernel. When combined with Gaussian smoothing and appropriate boundary handling~\cite{chan1998total,yuan2007image}, RL can recover sharp details without hallucinating textures. Modern blind deblurring variants~\cite{levin2009understanding,perrone2014total,fergus2006removing,whyte2010non} have introduced kernel estimation schemes based on total variation regularization or motion trajectory priors. Although deep models outperform RL in visual fidelity, the latter remains advantageous for controlled datasets where physical blur models can be reasonably approximated. Its main weaknesses, however, are noise amplification and computational instability when the blur kernel is misestimated.
+Classical deblurring methods such as Richardson–Lucy (RL) deconvolution~\cite{richardson1972bayesian,lucy1974iterative} are still important due to their strong physical grounding (as the methods are interpretable). The RL algorithm iteratively maximizes the Poisson likelihood of the observed image, assuming a known blur kernel. When combined with Gaussian smoothing and appropriate boundary handling~\cite{chan1998total,yuan2007image}, RL can recover sharp details without hallucinating textures. Modern blind deblurring variants~\cite{levin2009understanding,perrone2014total,fergus2006removing,whyte2010non} have introduced kernel estimation schemes based on total variation regularization or motion trajectory priors. Although deep models outperform RL in visual fidelity, the latter is better for controlled datasets where physical blur models can be reasonably approximated. Its main weaknesses, however, are noise amplification and computational instability when the blur kernel is incorrectly estimated.
 
 \subsection{Super-Resolution and Benchmark Datasets for License Plate Restoration}
 
@@ -155,7 +155,7 @@ where $\mathcal{L}_{\text{CIoU}}$ is the Complete IoU loss for bounding-box regr
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/yolo9.png}
+    \includegraphics[width=0.45\textwidth]{figures/yolo9.png}
     \caption{YOLOv9 architecture showing the GELAN backbone, PAN-FPN neck, and three-branch detection head outputting bounding boxes, class scores, and confidence.}
     \label{fig:yolov9_arch}
 \end{figure}
@@ -252,7 +252,7 @@ In short, the method evaluates a discrete set of motion kernels, reconstructs pr
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/algorithms/blur_all.png}
+    \includegraphics[width=0.9\linewidth]{figures/algorithms/blur_all.png}
     \caption{An original motion-blurred image (top-left) and the result after applying Blind Motion Deblurring (top-right). The bottom-left and bottom-right images show the results of Fast-ALPR on the blurred and deblurred images, respectively.}
     \label{fig:deblur-result}
 \end{figure}
@@ -281,6 +281,35 @@ In short, the method evaluates a discrete set of motion kernels, reconstructs pr
 \State \Return $\hat{I}$
 \end{algorithmic}
 \end{algorithm}
+
+\subsubsection{Comparator: Wiener Filter for Motion Deblurring}
+\label{ssec:wiener_motion}
+
+As a second classical algorithm, we implement a Wiener filter–based motion deblurring algorithm following the public implementation of \cite{vladkarpushin2020}. This approach performs deconvolution in the frequency domain, with a closed-form solution that balances inverse filtering with noise suppression.
+
+It uses the same image model, but now we are using the Wiener filter, which is just a naive inverse filter with a regularization term proportional to the noise-to-signal ratio (NSR):
+\begin{equation}
+\hat{I}(u,v) =
+\frac{
+\mathcal{F}\{k\}^*(u,v)
+}{
+|\mathcal{F}\{k\}(u,v)|^2 + \mathrm{NSR}
+}
+\,
+\mathcal{F}\{B\}(u,v),
+\end{equation}
+where $\mathcal{F}\{k\}^*$ is the complex conjugate of the blur spectrum. Then, the restored image is obtained by inverse Fourier transform:
+$$
+\hat{I} = \mathcal{F}^{-1}\{\hat{I}(u,v)\}.
+$$
+
+Just before the frequency-domain filtering, we applied a smooth windowing function that attenuates image borders to prevent ringing artifacts:
+\begin{equation}
+B_{\text{tapered}}(x,y) = B(x,y)\,w_x(x)\,w_y(y),
+\end{equation}
+where
+$w_x(x) = \tfrac{1}{2}\big[\tanh((x+\gamma/2)/\beta) - \tanh((x-\gamma/2)/\beta)\big]$
+and similarly for $w_y(y)$. This ensures continuity near the image edges. 
 
 \subsection{Adaptive Gamma Correction for Low-Light Enhancement}
 \label{ssec:undarkening}
@@ -360,6 +389,18 @@ According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement 
 \end{algorithmic}
 \end{algorithm}
 
+\subsubsection{Comparator: Dual Illumination Estimation for Exposure Correction}
+\label{ssec:dualillum}
+
+As a complementary approach to adaptive gamma correction, we will test the \textit{Dual Illumination Estimation} method by Zhang \textit{et al.}~\cite{zhang2019dualilluminationestimationrobust}, which performs simultaneous correction of both underexposed and overexposed regions using a pair of illumination maps. The algorithm models an image as $I = R \times L$, where $R$ is the reflectance and $L$ the illumination. For dark regions, it estimates $L$ directly using spatially adaptive smoothness priors, while for bright regions it processes the inverted image $I' = 1 - I$ and fuses both corrected results using multi-exposure image fusion. The final enhanced image is obtained as a locally weighted combination of forward and reverse corrected outputs:
+\begin{equation}
+I_{\text{final}} = \omega_f I'_f + \omega_r I'_r + (1 - \omega_f - \omega_r) I,
+\end{equation}
+where $\omega_f, \omega_r$ are exposure-dependent weights computed from contrast, saturation, and local brightness measures. 
+
+This dual-path design enables balanced enhancement across varying lighting conditions. We will use the publicly available Python implementation by Attaiki~\cite{lowlightpython} to compare against the IAGCWD method. Despite being more computationally expensive, Dual Illumination Estimation can recover both over- and underexposed regions simultaneously. This makes it an interesting benchmark to compare against Adaptive Gamma Correction.
+
+
 \subsection{Defogging}
 \label{ssec:defogging}
 
@@ -372,7 +413,7 @@ We will subsequently add Contrast Limited Adaptive Histogram Equalization (CLAHE
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/algorithms/fog_all.png}
+    \includegraphics[width=0.9\linewidth]{figures/algorithms/fog_all.png}
     \caption{An original foggy image (top-left) and the result after applying the DCP-based method (top-right). The bottom-left and bottom-right images show the results of Fast-ALPR on the foggy and de-hazed images, respectively.}
     \label{fig:defog-results}
 \end{figure}
@@ -430,11 +471,11 @@ Defogging is expected to produce modest but consistent improvement in $\mathrm{S
 
 \subsection{Original Public Dataset}
 
-The \texttt{fast-alpr} GitHub repository~\cite{fastalpr} relies on the multi-source dataset collection from \texttt{LocalizadorPatentes}~\cite{localizadorpatentes}, which has multiple public license plate datasets. The combined training data comes from the following sources:
+The \texttt{fast-alpr} GitHub repository~\cite{fastalpr} relies on the multi-source dataset collection from LocalizadorPatentes~\cite{localizadorpatentes}, which has multiple public license plate datasets. The combined training data comes from the following sources:
 
 \begin{itemize}
-    \item \textit{OpenImages}~\cite{openimages}: A large-scale dataset released by Google, containing over 9 million annotated images with 600 object categories. The subset used for ALPR training includes scenes containing vehicles and visible license plates, contributing diverse background and illumination conditions.
-    \item \textit{Romanian License Plate Dataset}: A small, high-quality public dataset with approximately 534 images of European-style Romanian plates annotated in Pascal VOC format.
+    \item \textit{OpenImages}~\cite{openimages}: A large-scale dataset containing over 9 million annotated images with 600 object categories. The subset used for ALPR training includes scenes containing vehicles and visible license plates.
+    \item \textit{Romanian License Plate Dataset}: A small, high-quality public dataset with approximately 534 images of European-style Romanian plates.
     \item \textit{OpenALPR Benchmark Dataset}: The benchmark dataset released by the OpenALPR project, comprising labeled vehicle images with license plate bounding boxes and corresponding text strings.
     \item \textit{CCPD (Chinese City Parking Dataset)}~\cite{ccpd}: A large-scale dataset introduced at ECCV 2018 with approximately 282,000 images, each annotated with the plate bounding box, four corner points, and text.
 \end{itemize}
@@ -443,7 +484,7 @@ During the original training of the YOLO-based detection model within \texttt{fa
 
 \subsection{Custom Dataset Collection} 
 
-As part of our project, we are creating our own dataset of real-world vehicle license plates captured using smartphone cameras and dashcams across multiple U.S. cities (San Diego, San Francisco, Los Angeles, Phoenix, San Jose, Chicago, and Pittsburgh). Each image is categorized into one of four environmental conditions: (1) Normal daylight, (2) Foggy weather, (3) Low-light or nighttime, and (4) Motion blur (vehicle or camera movement). Our goal is to have approximately 300 images per category. Figure \ref{fig:dataset_examples} shows a few example images for each type of distortion that we plan to analyze.
+We are creating our own dataset of real-world vehicle license plates captured using smartphone cameras and dashcams across multiple U.S. cities (San Diego, San Francisco, Los Angeles, Phoenix, San Jose, Chicago, and Pittsburgh). Each image is categorized into one of four environmental conditions: (1) Normal daylight, (2) Foggy weather, (3) Low-light or nighttime, and (4) Motion blur (vehicle or camera movement). Our goal is to have approximately 300 images per category. Figure \ref{fig:dataset_examples} shows a few example images for each type of distortion that we plan to analyze.
 
 \begin{figure*}
   \centering
@@ -455,10 +496,10 @@ As part of our project, we are creating our own dataset of real-world vehicle li
 
 \subsection{Synthetic Augmentation}
 
-To further expand the dataset and enable controlled experiments, we also plan to generate degraded samples using image-processing models. Motion blur is simulated through a randomized convolutional kernel generator that produces both curved and linear trajectories, optionally introducing per-channel perturbations to mimic real sensor motion. Each kernel is applied via two-dimensional convolution, followed by Gaussian noise injection and alpha blending with the original image to preserve natural appearance. In addition, fog effects will be synthesized using a combination of classical scattering-based models and recent deep learning fog-generation tools capable of controlling density and depth-dependent light scattering. These augmentations allow us to vary the intensity of degradation in a reproducible way while maintaining visual realism, enabling systematic ablation studies on how defogging, undarkening, and deblurring algorithms affect both image quality and downstream license-plate recognition performance.
+To expand the dataset and enable controlled experiments, we also plan to generate degraded samples using image-processing models. Motion blur is simulated through a randomized convolutional kernel generator that produces both curved and linear trajectories, optionally introducing per-channel perturbations to mimic real sensor motion. Each kernel is applied via two-dimensional convolution, followed by Gaussian noise injection and alpha blending with the original image to preserve natural appearance. In addition, fog effects will be synthesized using a combination of classical scattering-based models and recent deep learning fog-generation tools capable of controlling density and depth-dependent light scattering. These augmentations allow us to vary the intensity of degradation in a reproducible way while maintaining visual realism, enabling systematic ablation studies on how defogging, undarkening, and deblurring algorithms affect both image quality and downstream license-plate recognition performance.
 
 \section{Conclusion}
-We explored how classical image processing techniques can meaningfully improve the visibility and readability of real-world images captured under difficult conditions, such as fog, low light, and motion blur. 
+We explored how classical image processing techniques can meaningfully improve the visibility and readability of car license plate images captured under difficult conditions, such as fog, low light, and motion blur. 
 
 Using our custom dataset collected across several U.S. cities, we analyzed how three restoration algorithms (dark channel prior defogging, adaptive gamma correction, and blind motion deblurring) affect both perceptual image quality and downstream license-plate recognition. Each method addresses a different type of degradation: haze reduces global contrast, low light suppresses details, and motion blur erases texture. Using these restoration algorithms, we hope to show substantial gains in clarity and OCR accuracy.
 
