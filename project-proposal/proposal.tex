@@ -51,7 +51,7 @@
 \maketitle
 %
 \begin{abstract}
-Suboptimal visual conditions such as fog, low light, and motion blur are not only quite common in the world, but significantly decrease the quality of captured images, hindering their usability for real-world applications such as automatic license-plate recognition systems. Previous research in digital image restoration has equipped the restorer with dark-channel dehazing, gamma correction, and Wiener filtering, but most studies are reliant on synthetic/benchmark datasets, and are lacking in natural dataset evaluation. With the goal of addressing this gap, we have collected a real-world dataset of scenes under foggy, night, motion-blur, and clear conditions in order to analyze how various image-processing algorithms improve visual quality and feature clarity to aid in license-plate detection and text readability. We apply and tune defogging, undarkening, and deblurring algorithms for each category, and compare their effectiveness using metrics such as PSNR, SSIM, NIQE, and BRISQUE. We hope to show the strengths and weaknesses of classical enhancement methods under varying conditions, and quantify their impact on the accuracy of license-plate localization and optical character recognition (OCR).
+Suboptimal visual conditions such as fog, low light, and motion blur are not only quite common in the world, but significantly decrease the quality of captured images, hindering their usability for real-world applications such as automatic license-plate recognition systems. Previous research in digital image restoration has equipped the restorer with dark-channel de-hazing, gamma correction, and Wiener filtering, but most studies are reliant on synthetic/benchmark datasets, and are lacking in natural dataset evaluation. With the goal of addressing this gap, we have collected a real-world dataset of scenes under foggy, night, motion-blur, and clear conditions in order to analyze how various image-processing algorithms improve visual quality and feature clarity to aid in license-plate detection and text readability. We apply and tune defogging, undarkening, and deblurring algorithms for each category, and compare their effectiveness using metrics such as PSNR, SSIM, NIQE, and BRISQUE. We hope to show the strengths and weaknesses of classical enhancement methods under varying conditions, and quantify their impact on the accuracy of license-plate localization and optical character recognition (OCR).
 \end{abstract}
 %
 \begin{keywords}
@@ -65,11 +65,11 @@ Common real-world conditions such as fog, low light, and motion blur are common 
 
 For fog, scattered light and washed out colors make it difficult to see scene night or low-light. In the case of night/low-light conditions, sensor noise and poor exposure make smaller details difficult to see. In the event the camera/photographer moves quickly (especially common if in a moving vehicle), motion blur stretches objects and removes sharp texture, making any text present in them impossible to read. These effects work in their own way to hinder the visibility of the scene, and makes images and their text harder to detect.
 
-In this time of AI hype, our project's main focus is to return to the basics and investigate how classical digital image processing methods can mitigate these issues and improve the clarity and readability of real images. We are collecting a small custom dataset of visible license plates, that includes foggy, low-light, motion-blur, and clear-day photos collected around different parts of the United States, including San Diego, San Francisco, Phoenix, San Jose, Los Angeles, Chicago, and Pittsburgh with phones and dashcams. After testing various classical DIP algorithms; such as defogging, undarkening, and deblurring; we will compare how much each method improves overall image quality and the readability of license-plate text in normal outdoor conditions.
+In this time of AI hype, our project's main focus is to return to the basics and investigate how classical digital image processing methods can mitigate these issues and improve the clarity and readability of real images. We are collecting a small custom dataset of visible license plates, that includes foggy, low-light, motion-blur, and clear-day photos collected around different parts of the United States, including San Diego, San Francisco, Phoenix, San Jose, Los Angeles, Chicago, and Pittsburgh with phones and dashcams. After testing various classical DIP algorithms such as defogging, undarkening, and deblurring, we will compare how much each method improves overall image quality and the readability of license-plate text in normal outdoor conditions.
 
 \subsection{Contributions and Innovation}
 Our project goal is to evaluate how much traditional image processing can continue to help in a field that is at this time, dominated by deep learning. 
-From scratch, we collected a custom small real-world dataset of cars and license plates in fog, low-light, and motion-blur conditions across several U.S. cities, before benchmarking simple restoration pipelines against more modern ones.
+From scratch, we are collecting a custom small real-world dataset of cars and license plates in fog, low-light, and motion-blur conditions across several U.S. cities, before benchmarking simple restoration pipelines against more modern ones.
 
 The key contributions are:
 \begin{itemize}
@@ -103,7 +103,7 @@ Complementing this, the classical Improved Adaptive Gamma Correction with Weight
 
 \subsection{Haze and Fog Removal}
 
-He \textit{et al.}~\cite{5206515} proposed the seminal Dark Channel Prior (DCP) method, which estimates transmission maps from the minimum intensity of local patches under the assumption that most outdoor scenes contain at least one dark pixel in each color channel. The dehazing process reconstructs the latent scene radiance by inverting the Koschmieder model. DCP remains one of the most widely adopted priors due to its mathematical simplicity and ability to restore global contrast; however, its pixelwise assumptions can over-saturate bright areas and amplify noise in sky-dominated regions. Subsequent deep-learning approaches often embed DCP as a regularization term but still inherit this limitation under heavy haze or non-uniform illumination. 
+He \textit{et al.}~\cite{5206515} proposed the seminal Dark Channel Prior (DCP) method, which estimates transmission maps from the minimum intensity of local patches under the assumption that most outdoor scenes contain at least one dark pixel in each color channel. The de-hazing process reconstructs the latent scene radiance by inverting the Koschmieder model. DCP remains one of the most widely adopted priors due to its mathematical simplicity and ability to restore global contrast; however, its pixel-wise assumptions can over-saturate bright areas and amplify noise in sky-dominated regions. Subsequent deep-learning approaches often embed DCP as a regularization term but still inherit this limitation under heavy haze or non-uniform illumination. 
 
 Even though the method is simple, DCP continues to outperform many black-box deep models in visibility restoration for small datasets. For license plate recognition, the method effectively enhances edge contrast and color balance, though it lacks adaptive noise suppression and may introduce halo artifacts at sharp boundaries.
 
@@ -139,7 +139,7 @@ The Fast-ALPR pipeline~\cite{fastalpr} integrates two deep-learning components t
 
 \subsubsection{YOLOv9 for License Plate Detection}
 
-The YOLOv9 detector~\cite{wang2024yolov9} extends the one-stage object detection family with an improved backbone–neck–head design featuring the \emph{Programmable Gradient Information Bottleneck (C2f-PGB)} and a \emph{Generalized Efficient Layer Aggregation Network (GELAN)} backbone. Given an input image $I\in\mathbb{R}^{H\times W\times 3}$, the detector predicts $K$ bounding boxes $\{b_k\}_{k=1}^K$ and class confidence scores $\{s_k\}_{k=1}^K$ such that
+The YOLOv9 detector~\cite{wang2024yolov9} extends the one-stage object detection family with an improved backbone–neck–head design featuring the \emph{Programmable Gradient Information Bottleneck (C2f-PGB)} and a \emph{Generalized Efficient Layer Aggregation Network (GELAN)} backbone (Figure \ref{fig:yolov9_arch}). Given an input image $I\in\mathbb{R}^{H\times W\times 3}$, the detector predicts $K$ bounding boxes $\{b_k\}_{k=1}^K$ and class confidence scores $\{s_k\}_{k=1}^K$ such that
 \begin{equation}
 b_k = (x_k, y_k, w_k, h_k), \quad 
 s_k = \sigma(\mathbf{W}_h^\top f(I)),
@@ -248,9 +248,16 @@ After deconvolution, the padding region is removed to obtain the final deblurred
 \]
 
 The full deblurring pipeline is summarized in Algorithm~\ref{alg:grid_deblur}. 
-In short, the method evaluates a discrete set of motion kernels, reconstructs provisional images via RL updates, and selects the kernel that produces the sharpest and most stable restoration.
+In short, the method evaluates a discrete set of motion kernels, reconstructs provisional images via RL updates, and selects the kernel that produces the sharpest and most stable restoration. Figure \ref{fig:deblur-result} shows this algorithm being used on an example motion-blurred image, and a comparison of the results of running Fast-ALPR on the original and de-blurred image.
 
-\begin{algorithm}[H]
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/algorithms/blur_all.png}
+    \caption{An original motion-blurred image (top-left) and the result after applying Blind Motion Deblurring (top-right). The bottom-left and bottom-right images show the results of Fast-ALPR on the blurred and deblurred images, respectively.}
+    \label{fig:deblur-result}
+\end{figure}
+
+\begin{algorithm}
 \caption{Grid-Based Blind Motion Deblurring}
 \label{alg:grid_deblur}
 \begin{algorithmic}[1]
@@ -308,7 +315,7 @@ To avoid over-enhancement and loss of detail in bright regions of dimmed images,
 \gamma'(l) = \max\big(\tau, 1 - c_w(l)\big),
 \label{eq:trunc}
 \end{equation}
-where $\tau \in [0,1]$ is a lower bound on the gamma value. This prevents $\gamma(l)$ from approaching zero, thus constraining the brightness expansion of high-intensity pixels.
+where $\tau \in [0,1]$ is a lower bound on the gamma value. This prevents $\gamma(l)$ from approaching zero, thus constraining the brightness expansion of high-intensity pixels. The overall algorithm is summarized in Algorithm \ref{alg:iagcwd}.
 
 \subsubsection{Parameter Tuning}
 
@@ -323,13 +330,14 @@ According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/algorithms/dark_original.png}
-    \includegraphics[width=\linewidth]{figures/algorithms/dark_processed.jpg}
-    \caption{An original dark image (top) and the result (bottom) after applying the IAGCWD algorithm using the default parameters. The license plate is much easier to read in the processed image.}
+    \includegraphics[width=0.75\linewidth]{figures/algorithms/dark_original.png}
+    \includegraphics[width=0.75\linewidth]{figures/algorithms/dark_processed.jpg}
+    \includegraphics[width=0.75\linewidth]{figures/algorithms/dark_detections.png}
+    \caption{An original dark image of a car (top), the resulting image after applying the IAGCWD algorithm using the default parameters (middle), and the result of applying the Fast-ALPR pipeline on the processed image (bottom). When attempting to apply Fast-ALPR on the original dark image, no license plates were detected. The ground truth is 70NX850.}
     \label{fig:gamma-correction-result}
 \end{figure}
 
-\begin{algorithm}[H]
+\begin{algorithm}
 \caption{Improved Adaptive Gamma Correction with Weighted Distribution (IAGCWD)}
 \label{alg:iagcwd}
 \begin{algorithmic}[1]
@@ -352,13 +360,26 @@ According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement 
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Defogging with Dark Channel Prior Method}
+\subsection{Defogging}
+\label{ssec:defogging}
 
-% Yusuf to add here
+\subsubsection{Classical Approach: Dark Channel Prior}
+Using the dark channel prior (DCP) from He et al.~\cite{5206515} for single-image de-hazing, we will be able to compute a dark channel over $15 \times 15$ patches and pick the atmospheric light $A$ from the brightest $0.1\%$ of pixels. The transmission is estimated as $t(x) = 1 - 0.95 \cdot \mathrm{DC}(I/A)$, and we have it refined with a guided filter~\cite{He2010Guided}. We attain the de-hazed result from:
+\begin{equation}
+J(x) = \frac{I(x) - A}{\max(t(x), 0.1)} + A.
+\end{equation}
+We will subsequently add Contrast Limited Adaptive Histogram Equalization (CLAHE) post-processing ($8 \times 8$ tiles with clip limit 2.0) in order to increase the quality of the local contrast. DCP typically removes haze well, and runs fast, but is known to create halos around the edges and over-saturate bright regions.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/algorithms/fog_all.png}
+    \caption{An original foggy image (top-left) and the result after applying the DCP-based method (top-right). The bottom-left and bottom-right images show the results of Fast-ALPR on the foggy and de-hazed images, respectively.}
+    \label{fig:defog-results}
+\end{figure}
 
 
-
-
+\subsubsection{Learning Comparator: DehazeNet}
+We also test DehazeNet~\cite{Cai2016DehazeNet} as a baseline, which is a compact CNN that learns a nonlinear mapping between hazy input patches and their respective transmission maps. The advantage of this is that there are fewer halos and more natural color. However, it is slower when it comes to higher resolution images, and needs pretrained weights.
 
 \subsection{Evaluation Metrics and Expected Outcome}
 
@@ -426,7 +447,7 @@ As part of our project, we are creating our own dataset of real-world vehicle li
 
 \begin{figure*}
   \centering
-  \includegraphics[width=\textwidth]{Project Proposal/figures/our_dataset/all.png}
+  \includegraphics[width=\textwidth]{figures/our_dataset/all.png}
   \caption{Example samples from our collected dataset showing four real-world imaging conditions: (a) clear daylight, (b) fog, (c) low-light/night, and (d) motion blur. Each row shows three representative examples.}
   \label{fig:dataset_examples}
 \end{figure*}
@@ -439,7 +460,7 @@ To further expand the dataset and enable controlled experiments, we also plan to
 \section{Conclusion}
 We explored how classical image processing techniques can meaningfully improve the visibility and readability of real-world images captured under difficult conditions, such as fog, low light, and motion blur. 
 
-Using our custom dataset collected across several U.S. cities, we analyzed how three restoration algorithms—dark channel prior defogging, adaptive gamma correction, and blind motion deblurring—affect both perceptual image quality and downstream license-plate recognition. Each method addresses a different type of degradation: haze reduces global contrast, low light suppresses details, and motion blur erases texture. Using these restoration algorithms, we hope to show substantial gains in clarity and OCR accuracy.
+Using our custom dataset collected across several U.S. cities, we analyzed how three restoration algorithms (dark channel prior defogging, adaptive gamma correction, and blind motion deblurring) affect both perceptual image quality and downstream license-plate recognition. Each method addresses a different type of degradation: haze reduces global contrast, low light suppresses details, and motion blur erases texture. Using these restoration algorithms, we hope to show substantial gains in clarity and OCR accuracy.
 
 Our preliminary results suggest that classical algorithms still hold strong practical value, especially when interpretability, reliability, and speed matter more than raw perceptual realism. Moving forward, we plan to extend this study by combining these approaches with lightweight neural components, aiming for a balance between physical understanding and data-driven adaptability in future restoration pipelines.
 \label{sec:conclusion}
