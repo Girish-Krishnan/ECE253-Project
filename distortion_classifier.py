@@ -4,7 +4,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-# thresholds - tune these as needed
+# for tuning only:
 BRIGHT_DARK_THRESH = 80
 BLUR_LAP_VAR_THRESH = 60
 FOG_BRIGHT_THRESH = 150
