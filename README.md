@@ -6,9 +6,15 @@ Girish Krishnan, Philip Pincencia, and Yusuf Morsi
 
 The following directories contain public code that we will use in this project:
 
+### License Plate Detection
 * `fast-alpr/`: This contains the code for the overall system that integrates license plate detection (via YOLO bounding boxes) and license plate recognition (via OCR).
 * `open-image-models/`: This contains the code for the model we will use to detect license plates in images. The output is a bounding box around the license plate.
 * `fast-plate-ocr/`: This contains the code for the OCR model that will take in a cropped image of a license plate and output the text on the license plate.
+
+### Image Processing
+* `algorithms/motion-deblur/`: This contains the motion deblur algorithm implementation (`motion_deblur_py.py`). This implements classical blind motion deblurring using Richardson-Lucy deconvolution with grid search over motion kernels, plus a Wiener filter as a baseline. The algorithm performs grid search over PSF parameter space (length and angle) to find the best motion blur kernel, then applies either Richardson-Lucy deconvolution or Wiener filter deconvolution to restore the image.
+* `algorithms/iagcwd/`: This contains the Improved Adaptive Gamma Correction with Weighted Distribution (IAGCWD) algorithm implementation (`IAGCWD.py`). This algorithm improves the contrast of brightness-distorted images adaptively using improved adaptive gamma correction. It is used for enhancing underexposed or low-light images.
+* `algorithms/dcp-dehaze/`: This contains the Dark Channel Prior (DCP) based image dehazing algorithm implementation. This implements single image haze removal using the dark channel prior method proposed by He et al. The algorithm estimates atmospheric light and transmission map to recover haze-free images from hazy inputs.
 
 Note that the code in `fast-alpr/` essentially integrates the other two repositories together. But, I've still included the other two repositories because they contain code to help fine-tune the models on our custom dataset, as well as the results of pre-training the models on public datasets.
 
