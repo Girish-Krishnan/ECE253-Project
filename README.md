@@ -1,4 +1,4 @@
-# ECE 253 Project
+# Robust Image Restoration for Adverse-Condition License Plate Recognition
 
 Girish Krishnan, Philip Pincencia, and Yusuf Morsi
 
