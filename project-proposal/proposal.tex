@@ -113,45 +113,45 @@ Gong \textit{et al.}~\cite{gong2024datasetmodelrealisticlicense} introduced the 
 
 Another similar line of work by Na \textit{et al.}~\cite{Na_2025} proposed MF-LPR$^2$, which uses multi-frame information through optical flow alignment. Using FlowFormer++ for inter-frame motion estimation, the method aggregates frames using temporal filtering and spatial refinement modules to suppress inconsistent motion vectors. On their RLPR dataset, MF-LPR$^2$ achieved an OCR accuracy of 86.44\%, outperforming eleven state-of-the-art baselines, and significantly improving both PSNR (16.35~dB) and SSIM (0.35). The method’s interpretability makes it good for forensic applications. However, it requires dense optical flow computation, making it unsuitable for real-time traffic systems. Its performance also deteriorates when optical flow estimation fails due to occlusion or severe blur.
 
-Classical deblurring methods such as Richardson–Lucy (RL) deconvolution~\cite{richardson1972bayesian,lucy1974iterative} are still important due to their strong physical grounding (as the methods are interpretable). The RL algorithm iteratively maximizes the Poisson likelihood of the observed image, assuming a known blur kernel. When combined with Gaussian smoothing and appropriate boundary handling~\cite{chan1998total,yuan2007image}, RL can recover sharp details without hallucinating textures. Modern blind deblurring variants~\cite{levin2009understanding,perrone2014total,fergus2006removing,whyte2010non} have introduced kernel estimation schemes based on total variation regularization or motion trajectory priors. Although deep models outperform RL in visual fidelity, the latter is better for controlled datasets where physical blur models can be reasonably approximated. Its main weaknesses, however, are noise amplification and computational instability when the blur kernel is incorrectly estimated.
+Classical (non-learning based) deblurring methods such as Richardson–Lucy (RL) deconvolution~\cite{richardson1972bayesian,lucy1974iterative} are still important due to their strong physical grounding (as the methods are interpretable). The RL algorithm iteratively maximizes the Poisson likelihood of the observed image, assuming a known blur kernel. When combined with Gaussian smoothing and appropriate boundary handling~\cite{chan1998total,yuan2007image}, RL can recover sharp details. Modern blind deblurring variants~\cite{levin2009understanding,perrone2014total,fergus2006removing,whyte2010non} have introduced kernel estimation schemes based on motion trajectory priors to give further improvements to performance. Even though deep models outperform RL in visual fidelity, the RL algorithm is better for controlled datasets where physical blur models can be reasonably approximated. Its main weaknesses, however, are noise amplification and computational instability (especially when the blur kernel is incorrectly estimated).
 
-\subsection{Super-Resolution and Benchmark Datasets for License Plate Restoration}
+\subsection{Super-Resolution and Benchmark Datasets}
 
-Recent efforts have also focused on super-resolution (SR) and dataset curation for degraded license plate images. Nascimento \textit{et al.}~\cite{Nascimento_2025} proposed the UFPR-SR-Plates dataset, which provides 100{,}000 paired low- and high-resolution LP images captured under diverse environmental conditions. They benchmarked several SR models including Real-ESRGAN, SR3, LPSRGAN, PLNET, and LCDNet using a GP-LPR OCR backend. The study demonstrated that fusing multiple restored frames via a majority-vote-by-character scheme increased full-plate recognition accuracy from 2.2\% for raw low-resolution inputs to 42.3\%, while the best individual model (LCDNet) achieved 61.4\% accuracy at high resolution. The dataset’s strength is its scale and real-world diversity. However, it currently lacks nighttime and cross-country data. Diffusion-based SR models such as SR3 provide great perceptual quality but remain computationally expensive for real-time ALPR deployment.
+Recent efforts have also focused on super-resolution (SR) and making suitable datasets for degraded license plate images that need restoration. For example, Nascimento \textit{et al.}~\cite{Nascimento_2025} proposed the UFPR-SR-Plates dataset, which provides 100,000 paired images captured under different environmental conditions. They benchmarked several SR models including Real-ESRGAN, SR3, LPSRGAN, PLNET, and LCDNet using a GP-LPR OCR backend. The study showed that combining multiple restored frames via a majority-vote-by-character scheme increased full-plate recognition accuracy from 2.2\% for raw low-resolution inputs to 42.3\%, while the best individual model (LCDNet) achieved 61.4\% accuracy at high resolution. The dataset’s strength is its scale and real-world diversity. However, it currently lacks nighttime and cross-country data, which our project contributes. Diffusion-based SR models such as SR3 provide good quality but remain computationally expensive for real-time deployment.
 
 \subsection{Current Research Trends and Gaps}
 
-Overall, there is a trend toward integrating physically interpretable priors with data-driven learning to achieve reliable restoration under diverse degradations. Diffusion and Transformer-based architectures such as LP-Diff~\cite{11093681} fuse diffusion denoising with fine-grained plate structure constraints, but such models demand extensive training data and are less suited to low-data, real-time contexts. Classical methods like Richardson–Lucy deconvolution, the dark channel prior, and adaptive gamma correction remain competitive due to their interpretability, tunable behavior, and independence from learned priors. Their low computational cost makes them ideal for systematic evaluation on real-world data. Our work will focus on the use of classical image processing algorithms as pre-processing methods before feeding the image into deep learning models for license plate detection and recognition.
+The current trend is to combine learning-based methods with classical methods that provide interpretable (and physically meaningful) priors. Diffusion and Transformer-based architectures such as LP-Diff~\cite{11093681} combine diffusion denoising with fine-grained plate structure constraints, but such models demand extensive training data and are less suited to low-data, real-time contexts. Classical methods like RL deconvolution, the dark channel prior (DCP), and adaptive gamma correction remain competitive due to their interpretability, tunable behavior, and independence from learned priors. Their low computational cost makes them ideal for systematic evaluation on real-world data. Our project will thus focus on the use of these classical image processing algorithms as pre-processing methods before feeding the image into deep learning models for license plate detection and recognition.
 
 \section{Proposed Work}
 \label{sec:proposed-work}
 
 \subsection{Models for License Plate Detection and Recognition}
 
-The Fast-ALPR pipeline~\cite{fastalpr} integrates two deep-learning components trained independently: a YOLOv9-based license plate detector and a Compact Convolutional Transformer (CCT) based OCR recognizer. These models are available as pre-trained checkpoints on Hugging Face under the names "yolo-v9-t-384-license-plate-end2end" and "cct-xs-v1-global-model", respectively. Figure~\ref{fig:pipeline} illustrates the overall flow starting with image enhancement stage followed by license plate localization and text decoding.
+The Fast-ALPR pipeline~\cite{fastalpr} involves two deep-learning components trained seperately: a YOLOv9-based license plate detector and a Compact Convolutional Transformer (CCT)-based OCR recognizer. Figure~\ref{fig:pipeline} shows the process of how Fast-ALPR works, beginning with the image enhancement stage, and leading to the license plate localization and text decoding stage.
 
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figures/proposed_work/fast-alpr-pipeline.png}
-    \caption{Architecture of the Fast-ALPR pipeline. The input image is optionally enhanced (defogging, undarkening, deblurring) before detection using a YOLOv9-based license plate detector. Detected regions of interest (ROIs) are processed by a CNN–BiLSTM–CTC OCR network for character recognition, and final text results are post-processed with bounding box metadata.}
+    \caption{Architecture of Fast-ALPR. The input image is first enhanced (defogging, undarkening, deblurring) before undergoing detection with a YOLOv9-based license plate detector. Potential regions of interest that were detected are processed by a CNN OCR network for character recognition, and final text results are post-processed with bounding boxes.}
     \label{fig:pipeline}
 \end{figure}
 
 \subsubsection{YOLOv9 for License Plate Detection}
 
-The YOLOv9 detector~\cite{wang2024yolov9} extends the one-stage object detection family with an improved backbone–neck–head design featuring the \emph{Programmable Gradient Information Bottleneck (C2f-PGB)} and a \emph{Generalized Efficient Layer Aggregation Network (GELAN)} backbone (Figure \ref{fig:yolov9_arch}). Given an input image $I\in\mathbb{R}^{H\times W\times 3}$, the detector predicts $K$ bounding boxes $\{b_k\}_{k=1}^K$ and class confidence scores $\{s_k\}_{k=1}^K$ such that
+The YOLOv9 detector~\cite{wang2024yolov9} builds on the one-stage object detection family with a \emph{Programmable Gradient Information Bottleneck (C2f-PGB)} and a \emph{Generalized Efficient Layer Aggregation Network (GELAN)} backbone (Figure \ref{fig:yolov9_arch}). For an input image $I\in\mathbb{R}^{H\times W\times 3}$, the detector predicts $K$ bounding boxes $\{b_k\}_{k=1}^K$ and class confidence scores $\{s_k\}_{k=1}^K$ such that
 \begin{equation}
 b_k = (x_k, y_k, w_k, h_k), \quad 
 s_k = \sigma(\mathbf{W}_h^\top f(I)),
 \end{equation}
-where $f(\cdot)$ denotes the shared convolutional backbone, and $\sigma$ is the logistic activation. During training, YOLOv9 minimizes a compound loss
+where $f(\cdot)$ represents the shared convolutional backbone, and $\sigma$ is the logistic activation. During training, YOLOv9 minimizes a compound loss
 \begin{equation}
 \mathcal{L}_{\text{det}} =
 \lambda_{\text{box}}\,\mathcal{L}_{\text{CIoU}} +
 \lambda_{\text{cls}}\,\mathcal{L}_{\text{BCE}} +
 \lambda_{\text{obj}}\,\mathcal{L}_{\text{conf}},
 \end{equation}
-where $\mathcal{L}_{\text{CIoU}}$ is the Complete IoU loss for bounding-box regression, $\mathcal{L}_{\text{BCE}}$ represents binary cross-entropy terms for class prediction, and $\mathcal{L}_{\text{conf}}$ denotes the confidence loss, a binary cross-entropy term that penalizes incorrect predictions of whether a bounding box truly contains an object (license plate) or background.
+where $\mathcal{L}_{\text{CIoU}}$ is the Complete IoU loss for the regression of the bounding box, $\mathcal{L}_{\text{BCE}}$ represents binary cross-entropy terms for class prediction and $\mathcal{L}_{\text{conf}}$ represents the confidence loss, a binary cross-entropy term that penalizes incorrect predictions of whether a bounding box truly contains a license plate or whether it is just the background.
 
 \begin{figure}[htbp]
     \centering
@@ -162,21 +162,20 @@ where $\mathcal{L}_{\text{CIoU}}$ is the Complete IoU loss for bounding-box regr
 
 \subsubsection{CCT-XS OCR for Character Recognition}
 
-For character-level optical recognition, the CCT model combines convolutional token embedding with lightweight Transformer encoders and a Bidirectional Long Short-Term Memory (BiLSTM) sequence head trained with Connectionist Temporal Classification (CTC) loss. Given a cropped license plate image $P$, the OCR model first extracts visual features using convolutional layers and then processes them as a sequence through Transformer and BiLSTM modules to capture both spatial and contextual information. The output sequence is decoded by a CTC layer to produce the final text prediction $\hat{T}$, representing the recognized license plate number.
-
+For character-level optical recognition, the CCT model combines convolutional token embedding with lightweight Transformer encoders and a Bidirectional Long Short-Term Memory (BiLSTM) sequence head trained with Connectionist Temporal Classification (CTC) loss. Given a cropped license plate image $P$, the OCR model first extracts visual features with convolutional layers and then processes them as a sequence through the Transformer and BiLSTM modules to capture spatial and contextual information. The output sequence is decoded by a CTC layer to produce the final text prediction $\hat{T}$, bringing out the final recognized license plate number.
 
 \subsection{Blind Motion Deblurring}
 \label{ssec:fast_deblur}
 
-We employ a classical Richardson--Lucy (RL) deconvolution framework~\cite{richardson1972bayesian, lucy1974iterative}, extended with a grid-based estimation of the motion blur Point-Spread Function (PSF).
+We will use a classical Richardson--Lucy (RL) deconvolution framework~\cite{richardson1972bayesian, lucy1974iterative}, extended with a grid-based estimation of the motion blur Point-Spread Function (PSF).
 
 \subsubsection{Image model and RL deconvolution}
-The blurred image $B$ is modeled as the convolution of an unknown latent sharp image $I$ with a blur kernel $k$ and additive noise $\eta$:
+The blurred image $B$ is the convolution of an unknown latent sharp image $I$ with a blur kernel $k$ and additive noise $\eta$:
 \begin{equation}
 B = I * k + \eta,
 \end{equation}
-where $*$ denotes 2D convolution. 
-Given an estimate of $k$, RL iteratively refines the estimate $\hat{I}$ by maximizing the Poisson likelihood of $B$ conditioned on $\hat{I} * k$:
+where $*$ represents 2D convolution. 
+Given an estimate of $k$, RL refines the estimate (iteratively) $\hat{I}$ by maximizing the Poisson likelihood of $B$ conditioned on $\hat{I} * k$:
 \begin{equation}
 \hat{I}^{(t+1)} = 
 \hat{I}^{(t)} 
@@ -285,7 +284,7 @@ In short, the method evaluates a discrete set of motion kernels, reconstructs pr
 \subsubsection{Comparator: Wiener Filter for Motion Deblurring}
 \label{ssec:wiener_motion}
 
-As a second classical algorithm, we implement a Wiener filter–based motion deblurring algorithm following the public implementation of \cite{vladkarpushin2020}. This approach performs deconvolution in the frequency domain, with a closed-form solution that balances inverse filtering with noise suppression.
+We are also planning on implementing a Wiener filterfor motion deblurring algorithm, based on the public implementation of \cite{vladkarpushin2020}. This approach carries out deconvolution in the frequency domain, with a closed-form solution where we have both inverse filtering and noise suppression.
 
 It uses the same image model, but now we are using the Wiener filter, which is just a naive inverse filter with a regularization term proportional to the noise-to-signal ratio (NSR):
 \begin{equation}
@@ -392,20 +391,20 @@ According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement 
 \subsubsection{Comparator: Dual Illumination Estimation for Exposure Correction}
 \label{ssec:dualillum}
 
-As a complementary approach to adaptive gamma correction, we will test the \textit{Dual Illumination Estimation} method by Zhang \textit{et al.}~\cite{zhang2019dualilluminationestimationrobust}, which performs simultaneous correction of both underexposed and overexposed regions using a pair of illumination maps. The algorithm models an image as $I = R \times L$, where $R$ is the reflectance and $L$ the illumination. For dark regions, it estimates $L$ directly using spatially adaptive smoothness priors, while for bright regions it processes the inverted image $I' = 1 - I$ and fuses both corrected results using multi-exposure image fusion. The final enhanced image is obtained as a locally weighted combination of forward and reverse corrected outputs:
+As a complementary method to our gamma correction, we are also going to be testing \textit{Dual Illumination Estimation} by Zhang \textit{et al.}~\cite{zhang2019dualilluminationestimationrobust}, which performs simultaneous correction of both underexposed and overexposed regions using a pair of illumination maps. The algorithm depicts an image as $I = R \times L$, where $R$ is the reflectance and $L$ the illumination. For dark regions, it estimates $L$ directly with spatially adaptive smoothness priors, while for bright regions, it processes the inverted image $I' = 1 - I$ in addition to mixing both corrected results with multi-exposure image fusion. The final enhanced image is a locally weighted combination of forward and reverse corrected outputs:
 \begin{equation}
 I_{\text{final}} = \omega_f I'_f + \omega_r I'_r + (1 - \omega_f - \omega_r) I,
 \end{equation}
-where $\omega_f, \omega_r$ are exposure-dependent weights computed from contrast, saturation, and local brightness measures. 
+where $\omega_f, \omega_r$ are exposure-dependent weights calculated from contrast, saturation, and local brightness measures. 
 
-This dual-path design enables balanced enhancement across varying lighting conditions. We will use the publicly available Python implementation by Attaiki~\cite{lowlightpython} to compare against the IAGCWD method. Despite being more computationally expensive, Dual Illumination Estimation can recover both over- and underexposed regions simultaneously. This makes it an interesting benchmark to compare against Adaptive Gamma Correction.
+This dual-path design enables balanced enhancement in different lighting conditions. We will use the publicly available implementation by Attaiki~\cite{lowlightpython} to compare with the IAGCWD method. Despite being more computational, Dual Illumination Estimation is good in that it is able to recover both overexposed and underexposed regions at the same time, which makes it an interesting benchmark to compare against Adaptive Gamma Correction.
 
 
 \subsection{Defogging}
 \label{ssec:defogging}
 
 \subsubsection{Classical Approach: Dark Channel Prior}
-Using the dark channel prior (DCP) from He et al.~\cite{5206515} for single-image de-hazing, we will be able to compute a dark channel over $15 \times 15$ patches and pick the atmospheric light $A$ from the brightest $0.1\%$ of pixels. The transmission is estimated as $t(x) = 1 - 0.95 \cdot \mathrm{DC}(I/A)$, and we have it refined with a guided filter~\cite{He2010Guided}. We attain the de-hazed result from:
+Using the dark channel prior (DCP) from He et al.~\cite{5206515} for single-image de-hazing, we will be able to compute a dark channel over $15 \times 15$ patches and pick the atmospheric light $A$ from the brightest $0.1\%$ of pixels. The transmission is estimated at $t(x) = 1 - 0.95 \cdot \mathrm{DC}(I/A)$, and we have refined it with a guided filter~\cite{He2010Guided}. We attain the de-hazed result from:
 \begin{equation}
 J(x) = \frac{I(x) - A}{\max(t(x), 0.1)} + A.
 \end{equation}

@@ -70,4 +70,3 @@ if __name__ == "__main__":
             print(f"Failed to load image from {test_image_path}")
     else:
         print(f"Test image {test_image_path} not found. Skipping test.")
-
