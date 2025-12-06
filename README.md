@@ -44,6 +44,10 @@ source .venv/bin/activate
 ### `scripts/frame_scrubber.py`
 
 This tool lets you step through video frames, view them interactively, and save specific frames as images.
+
+### `scripts/fast_aplr_wrapper.py`
+
+This script wraps the `fast-alpr` repository into a Python script to make it easier to use. It takes in an image file and outputs the results of the `fast-alpr` repository.
     
 #### Basic Usage
 
