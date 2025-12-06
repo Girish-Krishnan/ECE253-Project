@@ -2,6 +2,14 @@
 
 Girish Krishnan, Philip Pincencia, and Yusuf Morsi
 
+
+## Dataset
+
+The dataset that we manually collected and used in this project is available on Kaggle:
+
+https://www.kaggle.com/datasets/yusufmorsi/adverse-condition-image-restoration-for-lpr
+
+
 ## Public Code
 
 The following directories contain public code that we will use in this project:
