@@ -1,0 +1,302 @@
+%% RELATED WORK
+
+@INPROCEEDINGS{11093681,
+  author={Gong, Haoyan and Zhang, Zhenrong and Feng, Yuzheng and Nguyen, Anh and Liu, Hongbin},
+  booktitle={2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 
+  title={LP-Diff: Towards Improved Restoration of Real-World Degraded License Plate}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={17831-17840},
+  keywords={Training;Degradation;Computer vision;Image recognition;Fuses;Computational modeling;Image restoration;Pattern recognition;Reliability;License plate recognition;image restoration;diffusion;dataset;license plate},
+  doi={10.1109/CVPR52734.2025.01661}}
+
+@article{SAPUTRA2024404,
+title = {Low Light Image Enhancement in License Plate Recognition using URetinex-Net and TRBA},
+journal = {Procedia Computer Science},
+volume = {234},
+pages = {404-411},
+year = {2024},
+note = {Seventh Information Systems International Conference (ISICO 2023)},
+issn = {1877-0509},
+doi = {https://doi.org/10.1016/j.procs.2024.03.021},
+url = {https://www.sciencedirect.com/science/article/pii/S1877050924003788},
+author = {Vriza Wahyu Saputra and Nanik Suciati and Chastine Fatichah},
+keywords = {Low Light Image Enhancement (LLIE), URetinex-Net, Automatic License Plate Recognition (ALPR), TRBA},
+abstract = {The license plate recognition system currently in use is susceptible to interference from the external environment and performs poorly in low-light conditions. This paper presents a solution for license plate recognition under a low-light environment. We adopted URetinex-Net methods that unfold an optimization issue into a learnable network to decompose a low illumination image into reflectance and illumination layers. We also adopted TRBA, an end-to-end recognition method involving no character segmentation. The experimental results show that the accuracy of the night environment of the proposed method is 80.11% increased by 5.11% compared to without the low light image enhancement method.}
+}
+
+@article{Nascimento_2025,
+   title={Toward Advancing License Plate Super-Resolution in Real-World Scenarios: A Dataset and Benchmark},
+   volume={31},
+   ISSN={1678-4804},
+   url={http://dx.doi.org/10.5753/jbcs.2025.5159},
+   DOI={10.5753/jbcs.2025.5159},
+   number={1},
+   journal={Journal of the Brazilian Computer Society},
+   publisher={Sociedade Brasileira de Computacao - SB},
+   author={Nascimento, Valfride and Lima, Gabriel E. and Ribeiro, Rafael O. and Schwartz, William Robson and Laroca, Rayson and Menotti, David},
+   year={2025},
+   month=jun, pages={435–449} }
+
+
+@article{Na_2025,
+   title={MF-LPR: Multi-frame license plate image restoration and recognition using optical flow},
+   volume={256},
+   ISSN={1077-3142},
+   url={http://dx.doi.org/10.1016/j.cviu.2025.104361},
+   DOI={10.1016/j.cviu.2025.104361},
+   journal={Computer Vision and Image Understanding},
+   publisher={Elsevier BV},
+   author={Na, Kihyun and Oh, Junseok and Cho, Youngkwan and Kim, Bumjin and Cho, Sungmin and Choi, Jinyoung and Kim, Injung},
+   year={2025},
+   month=may, pages={104361} }
+
+@misc{gong2024datasetmodelrealisticlicense,
+      title={A Dataset and Model for Realistic License Plate Deblurring}, 
+      author={Haoyan Gong and Yuzheng Feng and Zhenrong Zhang and Xianxu Hou and Jingxin Liu and Siqi Huang and Hongbin Liu},
+      year={2024},
+      eprint={2404.13677},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2404.13677}, 
+}
+
+
+%% PROPOSED WORK
+
+% Model
+@misc{fastalpr,
+  author       = {Andrew, A.},
+  title        = {Fast-ALPR: End-to-end license plate detection and OCR},
+  year         = {2024},
+  howpublished = {\url{https://github.com/ankandrew/fast-alpr}}
+}
+
+@article{wang2024yolov9,
+  title        = {YOLOv9: Learning What You Want to Learn Using Programmable Gradient Information},
+  author       = {Wang, Chien-Yao and Yeh, I-Hau and Liao, Hong-Yuan Mark},
+  journal      = {arXiv preprint arXiv:2402.13616},
+  year         = {2024},
+  url          = {https://arxiv.org/abs/2402.13616}
+}
+
+% Dataset
+@misc{localizadorpatentes,
+  title        = {LocalizadorPatentes: Datasets and training scripts for license plate detection},
+  howpublished = {\url{https://github.com/ankandrew/LocalizadorPatentes}},
+  year         = {2023}
+}
+
+@inproceedings{ccpd,
+  author  = {Xu, Zheng and Yang, Wei and Meng, Li and et al.},
+  title   = {CCPD: Chinese City Parking Dataset for License Plate Detection and Recognition},
+  booktitle = {Proceedings of ECCV},
+  year    = {2018}
+}
+
+@article{openimages,
+  author  = {Krasin, Ivan and Duerig, Tom and Alldrin, Neil and et al.},
+  title   = {OpenImages: A public dataset for large-scale multi-class object detection},
+  journal = {Google Research},
+  year    = {2017},
+  howpublished = {\url{https://storage.googleapis.com/openimages/web/index.html}}
+}
+
+% Algorithms: Deblurring
+@article{richardson1972bayesian,
+  title={Bayesian-based iterative method of image restoration},
+  author={Richardson, William Hadley},
+  journal={Journal of the Optical Society of America},
+  volume={62},
+  number={1},
+  pages={55--59},
+  year={1972},
+  publisher={Optica Publishing Group},
+  doi={10.1364/JOSA.62.000055}
+}
+
+@article{lucy1974iterative,
+  title={An iterative technique for the rectification of observed distributions},
+  author={Lucy, L. B.},
+  journal={The Astronomical Journal},
+  volume={79},
+  number={6},
+  pages={745--754},
+  year={1974},
+  doi={10.1086/111605}
+}
+
+@article{biggs1997acceleration,
+  title={Acceleration of iterative image restoration algorithms},
+  author={Biggs, David S. C. and Andrews, Mark},
+  journal={Applied Optics},
+  volume={36},
+  number={8},
+  pages={1766--1775},
+  year={1997},
+  publisher={Optica Publishing Group},
+  doi={10.1364/AO.36.001766}
+}
+
+@inproceedings{levin2009understanding,
+  title={Understanding and evaluating blind deconvolution algorithms},
+  author={Levin, Anat and Weiss, Yair and Durand, Fr{\'e}do and Freeman, William T.},
+  booktitle={IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={1964--1971},
+  year={2009},
+  organization={IEEE},
+  doi={10.1109/CVPR.2009.5206815}
+}
+
+@inproceedings{whyte2010non,
+  title={Non-uniform deblurring for shaken images},
+  author={Whyte, Oliver and Sivic, Josef and Zisserman, Andrew and Ponce, Jean},
+  booktitle={IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={491--498},
+  year={2010},
+  organization={IEEE},
+  doi={10.1109/CVPR.2010.5540037}
+}
+
+@article{perrone2014total,
+  title={Total variation blind deconvolution: The inverse problem of the inverse problem},
+  author={Perrone, Daniele and Favaro, Paolo},
+  journal={IEEE Transactions on Image Processing},
+  volume={22},
+  number={12},
+  pages={4808--4821},
+  year={2014},
+  publisher={IEEE},
+  doi={10.1109/TIP.2013.2284065}
+}
+
+@inproceedings{fergus2006removing,
+  title={Removing camera shake from a single photograph},
+  author={Fergus, Rob and Singh, Barun and Hertzmann, Aaron and Roweis, Sam T. and Freeman, William T.},
+  booktitle={ACM SIGGRAPH},
+  volume={25},
+  pages={787--794},
+  year={2006},
+  organization={ACM},
+  doi={10.1145/1141911.1141956}
+}
+
+@article{wang2004image,
+  title={Image quality assessment: From error visibility to structural similarity},
+  author={Wang, Zhou and Bovik, Alan C. and Sheikh, Hamid R. and Simoncelli, Eero P.},
+  journal={IEEE Transactions on Image Processing},
+  volume={13},
+  number={4},
+  pages={600--612},
+  year={2004},
+  publisher={IEEE},
+  doi={10.1109/TIP.2003.819861}
+}
+
+@article{chan1998total,
+  title={Total variation blind deconvolution},
+  author={Chan, Tony F. and Wong, Chiu-Kwong},
+  journal={IEEE Transactions on Image Processing},
+  volume={7},
+  number={3},
+  pages={370--375},
+  year={1998},
+  publisher={IEEE},
+  doi={10.1109/83.661180}
+}
+
+@article{yuan2007image,
+  title={Image deblurring with blurred/noisy image pairs},
+  author={Yuan, Lu and Sun, Jian and Quan, Long and Shum, Heung-Yeung},
+  journal={ACM Transactions on Graphics (TOG)},
+  volume={26},
+  number={3},
+  pages={1--10},
+  year={2007},
+  publisher={ACM},
+  doi={10.1145/1276377.1276406}
+}
+
+@misc{vladkarpushin2020,
+  author = {Vlad Karpushin},
+  title = {Motion Deblur (OpenCV Tutorial Implementation)},
+  year = {2020},
+  howpublished = {\url{https://github.com/VladKarpushin/motion_deblur}}
+}
+
+% Algorithms: undarkening
+@article{DBLP:journals/corr/abs-1709-04427,
+  author       = {Gang Cao and
+                  Lihui Huang and
+                  Huawei Tian and
+                  Xianglin Huang and
+                  Yongbin Wang and
+                  Ruicong Zhi},
+  title        = {Contrast Enhancement of Brightness-Distorted Images by Improved Adaptive
+                  Gamma Correction},
+  journal      = {CoRR},
+  volume       = {abs/1709.04427},
+  year         = {2017},
+  url          = {http://arxiv.org/abs/1709.04427},
+  eprinttype    = {arXiv},
+  eprint       = {1709.04427},
+  timestamp    = {Mon, 13 Aug 2018 16:47:50 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1709-04427.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@misc{zhang2019dualilluminationestimationrobust,
+      title={Dual Illumination Estimation for Robust Exposure Correction}, 
+      author={Qing Zhang and Yongwei Nie and Wei-Shi Zheng},
+      year={2019},
+      eprint={1910.13688},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/1910.13688}, 
+}
+
+@misc{lowlightpython,
+  author = {Souhaib Attaiki},
+  title = {Low light Image Enhancement},
+  year = {2020},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/pvnieo/Low-light-Image-Enhancement}},
+}
+
+
+% Algorithms: Defogging
+
+@INPROCEEDINGS{5206515,
+  author={Kaiming He and Jian Sun and Xiaoou Tang},
+  booktitle={2009 IEEE Conference on Computer Vision and Pattern Recognition}, 
+  title={Single image haze removal using dark channel prior}, 
+  year={2009},
+  volume={},
+  number={},
+  pages={1956-1963},
+  keywords={Statistics;Pixel},
+  doi={10.1109/CVPR.2009.5206515}}
+
+@article{He2010Guided,
+  author={He, Kaiming and Sun, Jian and Tang, Xiaoou},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
+  title={Guided Image Filtering}, 
+  year={2013},
+  volume={35},
+  number={6},
+  pages={1397-1409},
+  doi={10.1109/TPAMI.2012.213}
+}
+
+@article{Cai2016DehazeNet,
+  author={Cai, Bolun and Xu, Xiangmin and Jia, Kui and Qing, Chunmei and Tao, Dacheng},
+  journal={IEEE Transactions on Image Processing}, 
+  title={DehazeNet: An End-to-End System for Single Image Haze Removal}, 
+  year={2016},
+  volume={25},
+  number={11},
+  pages={5187-5198},
+  doi={10.1109/TIP.2016.2598681}
+}
