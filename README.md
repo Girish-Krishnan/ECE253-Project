@@ -109,6 +109,12 @@ This script implements evaluation metrics such as NIQE, BRISQUE, Sharpness, Brig
 python scripts/evaluation_metrics.py --raw_dir ./path/to/raw_images --processed_dir ./path/to/restored_images --labels_csv ./path/to/labels.csv --results_csv ./path/to/results.csv --brisque_model ./misc/brisque_model_live.yml --brisque_range ./misc/brisque_range_live.yml
 ```
 
+### `motion_blur_gen`
+
+This directory contains code to generate motion-blurred images from sharp images. This is useful for creating synthetic datasets for training or testing motion deblurring algorithms.
+
+See the README inside the `motion_blur_gen/` directory for more details.
+
 ## Jupyter Notebook
 
 The Jupyter notebook `license_plate_restoration.ipynb` contains the code that allows you to pass in a directory containing certain images, and this runs our classifier to decide which images need which restoration algorithms, applies the appropriate restoration algorithms, and then evaluates the results.
