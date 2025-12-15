@@ -43,10 +43,15 @@ source .venv/bin/activate
 Note that each of these directories contains a `README.md` file with more details about the respective algorithms and how to run them.
 
 * `algorithms/motion-deblur/`: This contains the motion deblur algorithm implementation (`motion_deblur_py.py`). This implements classical blind motion deblurring using Richardson-Lucy deconvolution with grid search over motion kernels, plus a Wiener filter as a baseline. The algorithm performs grid search over PSF parameter space (length and angle) to find the best motion blur kernel, then applies either Richardson-Lucy deconvolution or Wiener filter deconvolution to restore the image.
+  * Reference: https://github.com/VladKarpushin/motion_deblur
 * `algorithms/iagcwd/`: This contains the Improved Adaptive Gamma Correction with Weighted Distribution (IAGCWD) algorithm implementation (`IAGCWD.py`). This algorithm improves the contrast of brightness-distorted images adaptively using improved adaptive gamma correction. It is used for enhancing underexposed or low-light images.
+  * Reference: https://github.com/leowang7/iagcwd
 * `algorithms/Low-light-Image-Enhancement/`: This contains the Retinex-based low-light image enhancement algorithm implementation (from the paper Dual Illumination Estimation for Robust Exposure Correction). This implements a method for enhancing low-light images based on the Retinex theory, which decomposes an image into illumination and reflectance components to improve visibility in dark regions.
+  * Reference: https://github.com/pvnieo/Low-light-Image-Enhancement
 * `algorithms/dcp-dehaze/`: This contains the Dark Channel Prior (DCP) based image dehazing algorithm implementation. This implements single image haze removal using the dark channel prior method proposed by He et al. The algorithm estimates atmospheric light and transmission map to recover haze-free images from hazy inputs.
+  * Reference: https://github.com/mingyang-tu/dcp-dehaze
 * `algorithms/DehazeNet_Pytorch/`: This contains the DehazeNet deep learning based image dehazing algorithm implementation. DehazeNet is a convolutional neural network designed for single image haze removal. The model learns to estimate the transmission map from hazy images, which is then used to recover the haze-free image.
+  * Reference: https://github.com/thuBingo/DehazeNet_Pytorch/tree/master
 
 ## Utility Scripts
 
