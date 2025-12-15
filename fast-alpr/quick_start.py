@@ -9,7 +9,7 @@ alpr = ALPR(
 )
 
 # Load the image
-image_path = "../data/testing/image_defoggy.png"
+image_path = "../data/testing/dark_image_2_undarkened.jpg"
 frame = cv2.imread(image_path)
 
 # Draw predictions on the image

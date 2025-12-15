@@ -7,9 +7,6 @@ from typing import List, Tuple, Dict
 INPUT_DIR = r"dip_algorithms\data\blurred"
 OUTPUT_DIR = r"dip_algorithms\data\deblurred"
 
-# -------------------------------------------------------------
-# Motion PSF
-# -------------------------------------------------------------
 def motion_psf(length: int, angle_deg: float) -> np.ndarray:
     length = int(length)
     k = np.zeros((length, length), np.float32)
@@ -20,9 +17,6 @@ def motion_psf(length: int, angle_deg: float) -> np.ndarray:
     k /= (k.sum() + 1e-6)
     return k
 
-# -------------------------------------------------------------
-# Grayscale RL
-# -------------------------------------------------------------
 def rl_gray_fast(
     y: np.ndarray,
     psf: np.ndarray,
@@ -46,9 +40,6 @@ def rl_gray_fast(
 
     return x
 
-# -------------------------------------------------------------
-# SHARPNESS SCORE
-# -------------------------------------------------------------
 def laplacian_sharpness_gray(img_gray: np.ndarray) -> float:
     lap = cv2.Laplacian(img_gray, cv2.CV_32F, ksize=3)
     return float(lap.var())

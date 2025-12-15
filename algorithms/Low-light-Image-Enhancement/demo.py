@@ -14,7 +14,7 @@ from exposure_enhancement import enhance_image_exposure
 def main(args):
     # load images
     imdir = args.folder
-    ext = ['png', 'jpg', 'bmp']    # Add image formats here
+    ext = ['png', 'jpg', 'bmp', 'jpeg']    # Add image formats here
     files = []
     [files.extend(glob.glob(imdir + '*.' + e)) for e in ext]
     images = [cv2.imread(file) for file in files]
@@ -31,7 +31,7 @@ def main(args):
         filename = basename(files[i])
         name, ext = splitext(filename)
         method = "LIME" if args.lime else "DUAL"
-        corrected_name = f"{name}_{method}_g{args.gamma}_l{args.lambda_}{ext}"
+        corrected_name = f"{name}{ext}"
         cv2.imwrite(join(directory, corrected_name), enhanced_image)
 
 

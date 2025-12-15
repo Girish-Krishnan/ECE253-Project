@@ -156,8 +156,5 @@ def main():
 
     print("\nAll images processed successfully.")
 
-# ===========================
-# RUN
-# ===========================
 if __name__ == "__main__":
     main()

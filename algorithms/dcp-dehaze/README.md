@@ -24,6 +24,15 @@ dehaze = dcp_dehaze(input_image, **kwargs)
 | :--------------------------: | :------------------------: |
 | ![](./figures/haze.jpeg) | ![](./figures/dehaze.jpeg) |
 
+
+Note the script `results.py` runs the algorithm on all images in a given directory and saves the results.
+
+Example usage:
+
+```bash
+python results.py --input_dir ./figures/haze_images --output_dir ./figures/dehaze_results
+```
+
 ## Reference
 
 1. He, K., Sun, J., & Tang, X. (2010). Single image haze removal using dark channel prior. IEEE transactions on pattern analysis and machine intelligence, 33(12), 2341-2353.

@@ -57,6 +57,7 @@ def main():
     for path in img_paths:
         img = cv2.imread(path, 1)
         name = path.split('/')[-1].split('.')[0]
+        file_extension = path.split('/')[-1].split('.')[-1]
         
         # Extract intensity component of the image
         YCrCb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
@@ -83,7 +84,8 @@ def main():
         else:
             img_output = img
 
-        cv2.imwrite(args.output_dir+name+'.jpg', img_output)
+        # cv2.imwrite(args.output_dir+name+'.jpg', img_output)
+        cv2.imwrite(args.output_dir+name+'.'+file_extension, img_output)
 
 if __name__ == '__main__':
     main()

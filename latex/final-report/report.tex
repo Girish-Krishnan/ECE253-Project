@@ -5,12 +5,14 @@
 \documentclass{article}
 \usepackage{spconf,amsmath,graphicx}
 \usepackage{subcaption}
-\usepackage{url}
+\usepackage[hyphens]{url}
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{hyperref}
 
 % Example definitions.
 % --------------------
@@ -23,8 +25,8 @@
 %
 % Single address.
 % ---------------
-\name{Team Name: Pixel Perfect. \\\\
-Members: Yusuf Morsi (33.3\%), Girish Krishnan (33.3\%), and Philip Pincencia (33.3\%)}
+\name{\shortstack{Team Name: Pixel Perfect\\
+Members and Contributions: Yusuf Morsi (33$\tfrac{1}{3}$\%), Girish Krishnan (33$\tfrac{1}{3}$\%), and Philip Pincencia (33$\tfrac{1}{3}$\%)}}
 \address{Department of Electrical and Computer Engineering, University of California San Diego}
 %
 % For example:
@@ -52,14 +54,14 @@ Members: Yusuf Morsi (33.3\%), Girish Krishnan (33.3\%), and Philip Pincencia (3
 \maketitle
 %
 \begin{abstract}
-Suboptimal visual conditions such as fog, low light, and motion blur are not only quite common in the world, but significantly decrease the quality of captured images, hindering their usability for real-world applications such as automatic license-plate recognition systems. Previous research in digital image restoration has equipped the restorer with dark-channel de-hazing, gamma correction, and Wiener filtering, but most studies are reliant on synthetic/benchmark datasets, and are lacking in natural dataset evaluation. With the goal of addressing this gap, we have collected a real-world dataset of scenes under foggy, night, motion-blur, and clear conditions in order to analyze how various image-processing algorithms improve visual quality and feature clarity to aid in license-plate detection and text readability. We apply and tune defogging, undarkening, and deblurring algorithms for each category, and compare their effectiveness using metrics such as PSNR, SSIM, NIQE, and BRISQUE. We demonstrate the strengths and weaknesses of classical enhancement methods under varying conditions, and quantify their impact on the accuracy of license-plate localization and optical character recognition (OCR). The source code and dataset for this project are available at \url{https://github.com/Girish-Krishnan/ECE253-Project/}.
+Suboptimal visual conditions such as fog, low light, and motion blur are not only quite common in the world, but significantly decrease the quality of captured images, hindering their usability for real-world applications such as automatic license-plate recognition systems. Previous research in digital image restoration has equipped the restorer with dark-channel de-hazing, gamma correction, and Wiener filtering, but most studies are reliant on synthetic/benchmark datasets, and are lacking in natural dataset evaluation. With the goal of addressing this gap, we have collected a real-world dataset of scenes under foggy, night, motion-blur, and clear conditions in order to analyze how various image-processing algorithms improve visual quality and feature clarity to aid in license-plate detection and text readability. We apply and tune defogging, undarkening, and deblurring algorithms for each category, and compare their effectiveness using metrics such as NIQE and BRISQUE. We demonstrate the strengths and weaknesses of classical enhancement methods under varying conditions, and quantify their impact on the accuracy of license-plate localization and optical character recognition (OCR). The source code and dataset for this project are available at \url{https://github.com/Girish-Krishnan/robust-lpr-restoration}.
 \end{abstract}
 %
 \begin{keywords}
 Image enhancement, defogging, deblurring, low-light correction, license plate recognition
 \end{keywords}
 %
-\section{Introduction}
+\section{Introduction and Motivation}
 \label{sec:intro}
 
 Common real-world conditions such as fog, low light, and motion blur are common in everyday photography, making it difficult to capture clear images. Cameras/CCTVs in uncontrolled environments; such as traffic intersections, parking lots, or highways; record images and videos with low contrast, faded edges, and rough lighting. These distortions restrict how well basic vision systems read and analyze what is in front of them, especially when it comes to cases as practical as license-plate detection or traffic monitoring.
@@ -121,7 +123,7 @@ Recent work has also focused on super-resolution (SR) and making suitable datase
 
 \subsection{Current Research Trends and Gaps}
 
-The current trend is to combine learning-based methods with classical methods that provide interpretable (and physically meaningful) priors. Diffusion and Transformer-based architectures such as LP-Diff~\cite{11093681} combine diffusion denoising with fine-grained plate structure constraints, but such models demand extensive training data and are less suited to low-data, real-time contexts. Classical methods like RL deconvolution, the dark channel prior (DCP), and adaptive gamma correction remain competitive due to their interpretability, tunable behavior, and independence from learned priors. Their low computational cost makes them ideal for systematic evaluation on real-world data. Our project will thus focus on the use of these classical image processing algorithms as pre-processing methods before feeding the image into deep learning models for license plate detection and recognition.
+The current trend is to combine learning-based methods with classical methods that provide interpretable (and physically meaningful) priors. Diffusion and Transformer-based architectures such as LP-Diff~\cite{11093681} combine diffusion denoising with fine-grained plate structure constraints, but such models demand extensive training data and are less suited to low-data, real-time contexts. Classical methods like RL deconvolution, the dark channel prior (DCP), and adaptive gamma correction remain competitive due to their interpretability, tunable behavior, and independence from learned priors. Their low computational cost makes them ideal for systematic evaluation on real-world data. Our project thus focuses on the use of these classical image processing algorithms as pre-processing methods before feeding the image into deep learning models for license plate detection and recognition.
 
 \section{Methodology}
 \label{sec:methodology}
@@ -208,7 +210,7 @@ where $Z = \sum_{i,j}k_{i,j}$ normalizes the kernel.
 This formulation captures the dominant form of motion blur caused by camera or object translation during exposure~\cite{perrone2014total}. 
 By constraining $k$ to a physically plausible parameter space, we avoid the over-parameterization that often destabilizes free-form kernel estimation~\cite{fergus2006removing}.
 
-Rather than solving a fragile continuous optimization over $(L,\theta)$, we discretize the parameter space into a uniform grid:
+Instead of solving a delicate continuous optimization over $(L,\theta)$, we chose to discretize the parameter space into a uniform grid:
 \begin{equation}
 \mathcal{K} = 
 \big\{\, k(L, \theta) \mid 
@@ -217,10 +219,10 @@ L \in [L_{\min}, L_{\max}],
 \theta \in [0, 360^\circ)
 \big\}.
 \end{equation}
-Each kernel $k_i \in \mathcal{K}$ is applied to a downsampled version of $B$, followed by a few RL iterations ($T_\text{eval}$) to obtain a preliminary estimate $\hat{I}_i$.  
-This produces a set of candidate reconstructions representing distinct motion hypotheses.
+Each kernel $k_i \in \mathcal{K}$ is applied to a downsampled version of $B$, followed by a few RL iterations ($T_\text{eval}$) such that we obtain a preliminary estimate $\hat{I}_i$.  
+This provides us with a set of candidate reconstructions that represent distinct motion hypotheses.
 
-To quantify the plausibility of each candidate, we compute a sharpness score $S_i$ based on the mean variance of the Laplacian across color channels:
+In order to quantify the plausibility of each candidate, we compute a sharpness score $S_i$ based on the mean variance of the Laplacian across color channels:
 \begin{equation}
 S_i = 
 \frac{1}{3} \sum_{c \in \{R,G,B\}} 
@@ -354,7 +356,7 @@ The algorithm involves four tunable parameters:
     \item $T_t$: expected global average intensity (typically $T_t = 112$ for 8-bit images).
     \item $\tau_t$: threshold for classifying bright vs. dimmed images (empirically $\tau_t = 0.3$).
 \end{itemize}
-According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement for bright scenes, while $\alpha=0.75$ and $\tau=0.5$ work well for dimmed ones. Figure \ref{fig:gamma-correction-result} shows an example dark image alongside its processed image using these parameters. However, we plan to conduct an ablation study where these parameters are tuned further to explore the resulting performance on the license plate detection and OCR task.
+According to the paper, $\alpha=0.25$ and $\tau=0.5$ give effective enhancement for bright scenes, while $\alpha=0.75$ and $\tau=0.5$ work well for dimmed ones. Figure \ref{fig:gamma-correction-result} shows an example dark image alongside its processed image using these parameters.
 
 \begin{figure}
     \centering
@@ -397,7 +399,7 @@ I_{\text{final}} = \omega_f I'_f + \omega_r I'_r + (1 - \omega_f - \omega_r) I,
 \end{equation}
 where $\omega_f, \omega_r$ are exposure-dependent weights calculated from contrast, saturation, and local brightness measures. 
 
-This dual-path design enables balanced enhancement in different lighting conditions. We will use the publicly available implementation by Attaiki~\cite{lowlightpython} to compare with the IAGCWD method. Despite being more computational, Dual Illumination Estimation is good in that it is able to recover both overexposed and underexposed regions at the same time, which makes it an interesting benchmark to compare against Adaptive Gamma Correction.
+This dual-path design enables balanced enhancement in different lighting conditions. We use the publicly available implementation by Attaiki~\cite{lowlightpython} to compare with the IAGCWD method. Despite being more computational, Dual Illumination Estimation is good in that it is able to recover both overexposed and underexposed regions at the same time, which makes it an interesting benchmark to compare against Adaptive Gamma Correction.
 
 
 \subsection{Defogging}
@@ -442,12 +444,12 @@ During the original training of the YOLO-based detection model within \texttt{fa
 
 \subsubsection{Custom Dataset Collection} 
 
-We created our own dataset of real-world vehicle license plates captured using smartphone cameras and dashcams across multiple U.S. cities (San Diego, San Francisco, Los Angeles, Phoenix, San Jose, Chicago, and Pittsburgh). Each image is categorized into one of four environmental conditions: (1) Normal daylight, (2) Foggy weather, (3) Low-light or nighttime, and (4) Motion blur (vehicle or camera movement). Our goal was to have approximately 300 images per category. Figure \ref{fig:dataset_examples} shows a few example images for each type of distortion that we analyzed.
+We created our own dataset of real-world vehicle license plates captured using smartphone cameras and dashcams across multiple U.S. cities (San Diego, San Francisco, Los Angeles, Phoenix, San Jose, Chicago, and Pittsburgh). Each image is categorized into one of three environmental conditions: (1) Foggy weather, (2) Low-light or nighttime, and (3) Motion blur (vehicle or camera movement). We have collected 200 images per category. Figure \ref{fig:dataset_examples} shows a few example images for each type of distortion that we analyzed.
 
 \begin{figure*}
   \centering
   \includegraphics[width=\textwidth]{figures/our_dataset/all.png}
-  \caption{Example samples from our collected dataset showing four real-world imaging conditions: (a) clear daylight, (b) fog, (c) low-light/night, and (d) motion blur. Each row shows three representative examples.}
+  \caption{Example samples from our collected dataset. (a) clear daylight, (b) fog, (c) low-light/night, and (d) motion blur. Each row shows three representative examples.}
   \label{fig:dataset_examples}
 \end{figure*}
 
@@ -459,26 +461,9 @@ To expand the dataset and enable controlled experiments, we also generated degra
 \subsection{Evaluation Metrics}
 \label{ssec:metrics}
 
-The effectiveness of each restoration algorithm is evaluated using both image quality metrics and downstream recognition performance. 
-Let $I_{\text{in}}$ denote the degraded input image, $I_{\text{rest}}$ the restored image, and $I_{\text{ref}}$ a pseudo-reference image representing the best visually exposed frame of the same scene when available. 
+The effectiveness of each restoration algorithm is evaluated using both image quality metrics and downstream recognition performance. Because reference (ground truth) images are not always available for real scenes, we use the Natural Image Quality Evaluator (NIQE) and the Blind/Referenceless Image Spatial Quality Evaluator (BRISQUE), both based on natural scene statistics (NSS). 
 
-Peak Signal-to-Noise Ratio (PSNR) is used to quantify the mean-square deviation between the restored and reference images,
-\begin{equation}
-\mathrm{PSNR} = 10 \log_{10}\!\left(\frac{L^2}{\mathrm{MSE}}\right), 
-\end{equation}
-\begin{equation}
-\mathrm{MSE} = \frac{1}{MN}\!\sum_{x,y}\!\big(I_{\text{rest}}(x,y)-I_{\text{ref}}(x,y)\big)^2.
-\end{equation}
-
-where $L = 255$ for 8-bit images. Higher PSNR values correspond to smaller reconstruction error and improved luminance fidelity. To assess local geometric and contrast preservation, the Structural Similarity Index (SSIM) is computed over small spatial windows:
-\begin{equation}
-\mathrm{SSIM}(I_{\text{rest}}, I_{\text{ref}}) = 
-\frac{(2\mu_r\mu_t + C_1)(2\sigma_{r t} + C_2)}
-{(\mu_r^2 + \mu_t^2 + C_1)(\sigma_r^2 + \sigma_t^2 + C_2)},
-\end{equation}
-where $\mu_r$, $\mu_t$ denote the mean luminances, $\sigma_r^2$, $\sigma_t^2$ their variances, and $\sigma_{rt}$ their covariance within the window. 
-Constants $C_1, C_2$ stabilize the division for small denominators. Because reference images are not always available for real scenes, we additionally employ the Natural Image Quality Evaluator (NIQE) and the Blind/Referenceless Image Spatial Quality Evaluator (BRISQUE), both based on natural scene statistics (NSS). 
-Given an image $I_{\text{rest}}$, NIQE computes a multivariate Gaussian model of normalized luminance coefficients $\mathbf{f}(x,y)$ extracted over patches, and evaluates the Mahalanobis distance between its distribution parameters $\boldsymbol{\mu}_r, \Sigma_r$ (from pristine natural images) and those of the test image $\boldsymbol{\mu}_t, \Sigma_t$:
+Given a restored image $I_{\text{rest}}$, NIQE computes a multivariate Gaussian model of normalized luminance coefficients $\mathbf{f}(x,y)$ extracted over patches, and evaluates the Mahalanobis distance between its distribution parameters $\boldsymbol{\mu}_r, \Sigma_r$ (from pristine natural images) and those of the test image $\boldsymbol{\mu}_t, \Sigma_t$:
 \begin{equation}
 \mathrm{NIQE}(I_{\text{rest}}) = 
 \sqrt{(\boldsymbol{\mu}_r - \boldsymbol{\mu}_t)^\top
@@ -494,7 +479,7 @@ We compute the normalized Levenshtein similarity:
 A_{\text{OCR}} = 
 1 - \frac{d_{\text{lev}}\big(\hat{T}(I_{\text{rest}}), T_{\text{gt}}\big)}{\max(|\hat{T}|, |T_{\text{gt}}|)},
 \end{equation}
-where $d_{\text{lev}}$ is the edit distance. For a given OCR detection, $A_{\text{OCR}} = 0$ if the detection perfectly matches the ground truth.
+where $d_{\text{lev}}$ is the edit distance. For a given OCR detection, $A_{\text{OCR}} = 0$ if the detection perfectly matches the ground truth. In addition to the OCR accuracy, we also obtain the confidence score of each prediction directly from the model.
 
 \section{Results and Analysis}
 \label{sec:results}
@@ -542,7 +527,7 @@ To better visualize these results, we present comparative bar charts for Accurac
 
 \begin{table}[htbp]
 \centering
-\caption{Quantitative comparison of restoration methods. Best results for each metric in each category are highlighted in \textbf{bold} or \textcolor{green}{green}.}
+\caption{Quantitative comparison of restoration methods. Best results for each metric in each category are highlighted in \textbf{bold}.}
 \label{tab:results}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|c|}
@@ -580,17 +565,17 @@ Our analysis reveals mixed results across the different degradation types, highl
 \label{sec:discussion}
 
 \subsection{Interpretation of Results}
-The results demonstrate a divergence between \textit{perceptual quality} and \textit{machine readability}. 
+The results show a divergence between \textit{perceptual quality} and \textit{machine readability}. 
 In the case of fog, removing the haze directly aided the OCR, likely because haze acts as a linear contrast reduction that, when removed, restores the original signal fidelity. 
 In contrast, for motion blur and low light, the restoration processes (deconvolution and gamma correction) are non-linear or ill-posed inverse problems that often amplify noise or create artifacts (like ringing or noise boosting). 
-While a human might prefer the sharper, brighter image, the OCR network—trained primarily on clean or natural images—may be sensitive to these specific reconstruction artifacts. 
+While a human might prefer the sharper, brighter image, the OCR network (trained primarily on clean or natural images) may be sensitive to these specific reconstruction artifacts. 
 For example, the high sharpness score in our deblurred results confirms that edges were restored, but the drop in accuracy suggests those edges may have been displaced or distorted.
 
 \subsection{Pros and Cons of Proposed Methods}
 \textbf{Pros:}
 \begin{itemize}
     \item \textbf{High Perceptual Sharpness:} In all categories, our methods significantly increased the sharpness metric, successfully recovering high-frequency details.
-    \item \textbf{Effectiveness in Haze:} The classical DCP method proved superior to even a learning-based competitor for the specific task of improving text legibility in fog.
+    \item \textbf{Effectiveness in Haze:} The classical DCP method was superior to even a learning-based competitor for the specific task of improving text legibility in fog.
     \item \textbf{Data Efficiency:} These improvements were achieved without training large restoration networks, relying instead on physical priors.
 \end{itemize}
 
@@ -602,7 +587,7 @@ For example, the high sharpness score in our deblurred results confirms that edg
 \end{itemize}
 
 \subsection{Limitations and Future Work}
-One limitation of our current approach is the lack of a unified condition-detection module. Currently, we assume the degradation type is known. In a fully autonomous system, a classifier would be needed to route the image to the correct restoration pipeline. Additionally, our dataset, while diverse, is relatively small (approx. 300 images per category). Future work would involve expanding the dataset, implementing an automatic degradation classifier, and exploring hybrid models that use deep learning to estimate the parameters for the classical restoration algorithms.
+One limitation of our current approach is the lack of a unified condition-detection module. Currently, we assume the degradation type is known. In a fully autonomous system, a classifier would be needed to route the image to the correct restoration pipeline. Additionally, our dataset, while diverse, is relatively small (approx. 200 images per category). Future work would involve expanding the dataset, implementing an automatic degradation classifier, and exploring hybrid models that use deep learning to estimate the parameters for the classical restoration algorithms.
 
 \section{Conclusion}
 We explored how classical image processing techniques can meaningfully improve the visibility and readability of car license plate images captured under difficult conditions, such as fog, low light, and motion blur. 
@@ -612,7 +597,11 @@ Using our custom dataset collected across several U.S. cities, we analyzed how t
 Our preliminary results suggest that classical algorithms still hold strong practical value, especially when interpretability, reliability, and speed matter more than raw perceptual realism. Moving forward, we plan to extend this study by combining these approaches with lightweight neural components, aiming for a balance between physical understanding and data-driven adaptability in future restoration pipelines.
 \label{sec:conclusion}
 
+\section{GitHub Repository}
 
+GitHub Repository:\\ \url{https://github.com/Girish-Krishnan/robust-lpr-restoration}
+
+Dataset:\\ \url{https://www.kaggle.com/datasets/yusufmorsi/adverse-condition-image-restoration-for-lpr}
 
 \vfill\pagebreak
 

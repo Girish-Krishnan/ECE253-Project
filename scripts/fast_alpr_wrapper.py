@@ -37,10 +37,11 @@ def run_fast_alpr(img_bgr: np.ndarray) -> str:
 
     # If no plate is found, return empty string
     if not plate_detections:
-        return ""
+        return "", 0.0
 
     # Pick the highest-confidence plate box
     best_detection = max(plate_detections, key=lambda d: d.confidence)
+    best_confidence = best_detection.confidence
 
     # Crop the plate region
     bbox = best_detection.bounding_box
@@ -53,9 +54,9 @@ def run_fast_alpr(img_bgr: np.ndarray) -> str:
 
     # Return OCR text string (empty if OCR fails)
     if ocr_result is None or not ocr_result.text:
-        return ""
+        return "", 0.0
 
-    return ocr_result.text
+    return ocr_result.text, best_confidence, x1, y1, x2, y2
 
 
 if __name__ == "__main__":
